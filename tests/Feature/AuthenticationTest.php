@@ -9,7 +9,7 @@ use App\Models\User;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    /* use RefreshDatabase;
 
     public function testRequiredFieldsForRegistration()
     {
@@ -24,10 +24,10 @@ class AuthenticationTest extends TestCase
                     "password" => ["The password field is required."],
                 ]
             ]);
-    }
+    } */
 
 
-    public function testRepeatPassword()
+    /* public function testRepeatPassword()
     {
         $this->withoutExceptionHandling();
         $userData = [
@@ -45,7 +45,7 @@ class AuthenticationTest extends TestCase
                 ]
             ]);
     }
-
+ */
 
     /** @test */
     /* public function testSuccessfulRegistration()

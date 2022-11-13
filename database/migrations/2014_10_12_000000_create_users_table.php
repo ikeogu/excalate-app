@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-           
+
             $table->string('phone_number');
             $table->string('address')->nullable();
             $table->string('city')->nullable();
@@ -27,7 +27,8 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->integer('role')->default(3);
             $table->enum('status', [1, 0])->default(1);
-
+            $table->string('nin')->nullable();
+            $table->string('gender')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

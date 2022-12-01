@@ -1,0 +1,40 @@
+import:
+  - recipe/laravel.php
+
+config:
+  repository: "https://github.com/Craxet-Developers/escalate-technologies-api.git"
+  bin/php: "/usr/local/lsws/lsphp81/bin/php"
+  keep_releases: 5
+
+hosts:
+  default:
+    hostname: "162.254.33.210"
+    remote_user: "apies8767"
+    http_user: "apies8767"
+    deploy_path: "/home/api.escalatetechnologies.net/public_html"
+    branch: "main"
+    ssh_multiplexing: false
+  staging:
+    hostname: "162.254.33.210"
+    remote_user: "stagi7580"
+    http_user: "stagi7580"
+    deploy_path: "/home/staging-api.escalatetechnologies.net/public_html"
+    branch: "develop"
+    ssh_multiplexing: false
+
+tasks:
+  deploy:
+    - deploy:prepare
+    - deploy:vendors
+    - artisan:storage:link
+    - artisan:optimize:clear
+    - artisan:migrate
+    - artisan:optimize
+    - deploy:publish
+  rebuild_permissions:
+    - cd: "{{release_path}}"
+    - run: "clpctl system:permissions:reset . 775"
+
+after:
+  # deploy: rebuild_permissions
+  deploy:failed: deploy:unlock

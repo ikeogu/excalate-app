@@ -8,14 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -41,8 +44,6 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at'
     ];
 
-
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -51,6 +52,8 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     /**
@@ -60,7 +63,6 @@ class User extends Authenticatable implements HasMedia
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-
     ];
 
     protected $appends = [
@@ -106,5 +108,15 @@ class User extends Authenticatable implements HasMedia
         return Attribute::make(
             get: fn () => $this->getRoleNames()[0] ?? null
         );
+    }
+
+    public function business_profile() : HasMany
+    {
+        return $this->hasMany(BusinessProfile::class);
+    }
+
+    public function business_category() : BelongsTo
+    {
+        return $this->belongsTo(BusinessCategory::class);
     }
 }

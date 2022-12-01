@@ -24,7 +24,7 @@ it('register successfully', function () {
     ];
 
     $response = $this->post(route('ruser'), $data);
-
+    
     $response->assertStatus(HttpStatusCode::SUCCESSFUL->value);
 
     assertDatabaseCount('users', 1);

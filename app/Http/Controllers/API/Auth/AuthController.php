@@ -43,6 +43,7 @@ class AuthController extends  Controller
 
     public function registerAdmin(RegistrationRequest $request) : JsonResponse
     {
+        $request = $request->data['attributes'];
         return $this->register($request, 2);
     }
 
@@ -55,7 +56,8 @@ class AuthController extends  Controller
     public function register(RegistrationRequest $request,  int $role) : JsonResponse
     {
 
-        $input = $request->validated();
+        $input = $request->validated()['data']['attributes'];
+
         $input['password'] = bcrypt($input['password']);
         $input['role'] = $role;
         $user = User::create($input);
@@ -70,7 +72,8 @@ class AuthController extends  Controller
 
         return $this->success(
             message: 'Registration successful',
-            data: ['token' => $accessToken]
+            data: ['token' => $accessToken],
+            status: HttpStatusCode::SUCCESSFUL->value
         );
 
     }
@@ -91,7 +94,8 @@ class AuthController extends  Controller
             ]);
         }
 
-        $token = $user->createToken("$user->first_name $user->last_name token")->accessToken;
+        $token = $user->createToken("$user->first_name $user->last_name token")->
+            accessToken;
 
         return $this->success(
             message: 'Login suceessful',
@@ -100,7 +104,9 @@ class AuthController extends  Controller
                 'id' => $user->id,
                 'attribute' => new UserResource($user),
                 'token' => $token,
-            ]
+
+            ],
+            status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 

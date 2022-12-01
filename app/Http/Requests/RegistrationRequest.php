@@ -23,17 +23,22 @@ class RegistrationRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules() : array
     {
         return [
-            //
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone_number' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', Password::min(8)->mixedCase()->symbols()],
-            'c_password' => 'required|same:password',
 
+            'data.attributes.first_name' => ['required', 'string', 'max:255'],
+            'data.attributes.last_name' => ['required', 'string', 'max:255'],
+            'data.attributes.gender' => ['required', 'string'],
+            'data.attributes.address' => ['required', 'string'],
+            'data.attributes.city' => ['required', 'string'],
+            'data.attributes.state' => ['required', 'string'],
+            'data.attributes.avatar' => ['sometimes', 'file','mimes:png,jpg,jpeg'],
+            'data.attributes.nin' => ['required', 'string', 'max:13'],
+            'data.attributes.email' => ['required', 'string', 'email', 'max:255'],
+            'data.attributes.password' => ['required', 'string', 'min:8', 'confirmed',
+                 Password::min(8)->mixedCase()->symbols()],
+            'data.attributes.phone_number' => ['required', 'string', 'max:255'],
         ];
     }
 }

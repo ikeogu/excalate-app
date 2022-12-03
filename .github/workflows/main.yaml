@@ -1,0 +1,51 @@
+name: deploy application
+
+on:
+  push:
+    branches: [main, develop]
+
+concurrency: production_environment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          tools: composer:v2
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Deploy Production
+        uses: deployphp/action@v1
+        if: github.ref_name == 'main'
+        with:
+          private-key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          known-hosts: "${{ secrets.SSH_KNOWN_HOSTS }}"
+          dep: deploy default
+
+      - name: Deploy Staging
+        uses: deployphp/action@v1
+        if: github.ref_name == 'develop'
+        with:
+          private-key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          known-hosts: "${{ secrets.SSH_KNOWN_HOSTS }}"
+          dep: deploy staging

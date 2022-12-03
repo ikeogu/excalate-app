@@ -16,6 +16,7 @@ return new class extends Migration
     {
         Artisan::call('db:seed', [
             '--class' => 'RolePermissionSeeder',
+            '--force' => true,
         ]);
     }
 
@@ -28,6 +29,7 @@ return new class extends Migration
     {
         Artisan::call('db:seed', [
             '--class' => 'RolePermissionSeeder',
+            '--force' => true,
         ]);
     }
 };

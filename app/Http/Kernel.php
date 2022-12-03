@@ -44,7 +44,7 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\Cors::class,
-            \App\Http\Middleware\ForceJsonResponse::class /** @phpstan-ignore-line */,
+            \App\Http\Middleware\ForceJsonReponse::class /** @phpstan-ignore-line */,
         ],
     ];
 

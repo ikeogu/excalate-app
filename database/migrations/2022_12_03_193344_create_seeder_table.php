@@ -26,6 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seeder');
+        Artisan::call('db:seed', [
+            '--class' => 'RolePermissionSeeder',
+        ]);
     }
 };

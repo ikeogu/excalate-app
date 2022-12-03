@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::any('/', static fn () => response()->json([
-    'message' => 'Welcome to Excalate API',
-    'apiVersion' => 'v1.0.0',
-]));
 
 Route::get('/clear', function () {
 

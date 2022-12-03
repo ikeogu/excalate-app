@@ -6,19 +6,18 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-
+use Laravel\Sanctum\HasApiTokens;
+use Maatwebsite\Excel\Concerns\WithLimit;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -40,10 +39,10 @@ class User extends Authenticatable implements HasMedia
         'avatar',
         'role',
         'status',
-        'nin',
         'email_verified_at'
     ];
 
+    protected $with = ['business_profile', 'contacts','avatar'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -52,8 +51,6 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
     ];
 
     /**
@@ -79,7 +76,7 @@ class User extends Authenticatable implements HasMedia
     }
 
     /** @codeCoverageIgnore */
-    protected function avatar(): Attribute
+    protected function profile_picture(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->getFirstMediaUrl('avatar') ?: null
@@ -118,5 +115,10 @@ class User extends Authenticatable implements HasMedia
     public function business_category() : BelongsTo
     {
         return $this->belongsTo(BusinessCategory::class);
+    }
+
+    public function contacts() : HasMany
+    {
+        return $this->hasMany(Contact::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin \App\Models\User */
 class UserResource extends JsonResource
 {
     /**
@@ -17,13 +18,13 @@ class UserResource extends JsonResource
         return [
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'full_name' => $this->full_name,
             'email' => $this->email,
             'phone_number' => $this->phone_number,
             'gender' => $this->gender,
-            'country' => $this->country,
-            'avatar' => $this->avatar ?? null,
-            'role' => $this->role ?? null
+            'avatar' => $this->profile_picture ?? '',
+            'emergency_contact' => $this->contacts()->where('type', 'emergency')->get(),
+            'business_profile' => $this->business_profile()->first(),
+
         ];
     }
 }

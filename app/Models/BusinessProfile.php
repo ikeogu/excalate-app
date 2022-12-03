@@ -11,7 +11,7 @@ class BusinessProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'name',
         'location',
         'lat',
         'long',
@@ -19,16 +19,17 @@ class BusinessProfile extends Model
         'min_charge',
         'service_type',
         'user_id',
-        'busness_cat_id',
-
+        'business_category_id',
+        'rating',
+        'status'
     ];
 
-    public function users() : BelongsTo
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function busness_category() : BelongsTo
+    public function business_category() : BelongsTo
     {
         return $this->belongsTo(BusinessCategory::class);
     }

@@ -11,6 +11,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\VerifyOtpRequest;
 use App\Http\Resources\UserResource;
+use App\Models\BusinessProfile;
 use App\Models\EmailVerification;
 use App\Services\VerificationService;
 use Illuminate\Http\JsonResponse;
@@ -68,11 +69,32 @@ class AuthController extends  Controller
         }else{
             $user->assignRole('admin');
         }
-        $accessToken = $user->createToken("$user->first_name $user->last_name token")->accessToken;
+
+        if($request->has('data.relationships')){
+            $businessInput = $request->validated()['data']['relationships']['business']['data'];
+            $businessInput['user_id'] = $user->id;
+            $businessInput['business_category_id'] = $request->validated()['data']['relationships']['business']['data']['category_id'];
+
+            $user->business_profile()->create(Arr::except(
+                $businessInput,'category_id'));
+
+        }
+
+        $accessToken = $user->createToken("API Token",
+            ($user->role =="super admin" || $user->role == "admin") ? ['admin']: ['user'])->
+            plainTextToken;
+
+        VerificationService::generateAndSendOtp($user);
 
         return $this->success(
             message: 'Registration successful',
-            data: ['token' => $accessToken],
+            data: [
+                'type' => 'user',
+                'attributes' => [
+                    'user' => $user,
+                    'access_token' => $accessToken,
+                ],
+            ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
 
@@ -89,21 +111,23 @@ class AuthController extends  Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'password' => ['Password mismatched'],
-            ]);
+            return $this->success(
+                message: 'The provided credentials are incorrect.',
+                status: HttpStatusCode::FORBIDDEN->value
+            );
         }
 
-        $token = $user->createToken("$user->first_name $user->last_name token")->
-            accessToken;
+        $accessToken = $user->createToken("API Token",
+            ($user->role == "super admin" || $user->role == "admin") ? ['admin'] : ['user'])->
+                plainTextToken;
 
         return $this->success(
             message: 'Login suceessful',
             data: [
                 'type' => 'user',
                 'id' => $user->id,
-                'attribute' => new UserResource($user),
-                'token' => $token,
+                'attribute' => $user,
+                'token' => $accessToken,
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -116,7 +140,8 @@ class AuthController extends  Controller
         $loggedUser = auth()->user();
 
         /** @var EmailVerification */
-        $isValidOtp = EmailVerification::firstWhere(['email' => $loggedUser->email, 'otp' => $request->otp]);
+        $isValidOtp = EmailVerification::firstWhere(['email' =>
+            $loggedUser->email, 'otp' => $request->otp]);
 
         if (now()->greaterThan($isValidOtp->expired_at)) {
             return $this->failure(
@@ -162,7 +187,8 @@ class AuthController extends  Controller
         $loggedUser = auth()->user();
 
         /** @var EmailVerification */
-        $isValidOtp = EmailVerification::firstWhere(['email' => $loggedUser->email, 'otp' => $request->otp]);
+        $isValidOtp = EmailVerification::firstWhere(['email' =>
+             $loggedUser->email, 'otp' => $request->otp]);
 
         if (now()->greaterThan($isValidOtp->expired_at)) {
             return $this->failure(
@@ -182,54 +208,51 @@ class AuthController extends  Controller
         });
     }
 
-
-    public function logout(): JsonResponse
+    public function resendForgetonPasswordOtp(): JsonResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
+        /** @var User */
+        $loggedUser = auth()->user();
 
-        /** @var Token $token */
-        $token = $user->token();
-
-        $tokenRepository = app(TokenRepository::class);
-        $refreshTokenRepository = app(RefreshTokenRepository::class);
-
-        // Revoke an access token...
-        $tokenRepository->revokeAccessToken($token->id);
-
-        // Revoke all of the token's refresh tokens...
-        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
-
-        return response()->json(['message' => 'Logged out successfully']);
-    }
-
-
-    //get access token
-    public function getAccessToken(Request $request): JsonResponse
-    {
-
-        $http = new \GuzzleHttp\Client;
-
-        $response = $http->post(config('app.url') . '/oauth/token', [
-            'form_params' => [
-                'grant_type' => $request->data['grant_type'],
-                'client_id' => config('passport.personal_access_client.id'),
-                'client_secret' => config('passport.personal_access_client.secret'),
-                'username' => $request->data['email'],
-                'password' => $request->data['password'],
-                'scope' => '',
-            ],
-        ]);
+        VerificationService::generateAndSendOtp($loggedUser);
 
         return $this->success(
-            message: 'Token generated successfully',
-            data: json_decode((string)$response->getBody(), true)
+            message: 'OTP resent successfully'
         );
     }
 
 
+    //sanctum logout
+    public function logout(Request $request): JsonResponse
+    {
+        /** @phpstan-ignore-next-line */
+        $request->user()->tokens()->delete();
 
-    // oauth token
+        return $this->success(
+            message: 'Logout successful'
+        );
+    }
+
+    // get access token sanctum
+
+    public function accessToken() : JsonResponse
+    {
+        /** @var User */
+        $user = auth()->user();
+        $token = $user->createToken("$user->first_name $user->last_name token")->
+        accessToken;
+
+        return $this->success(
+            message: 'Login suceessful',
+            data: [
+                'type' => 'user',
+                'id' => $user->id,
+                'attribute' => new UserResource($user),
+                'token' => $token,
+
+            ],
+            status: HttpStatusCode::SUCCESSFUL->value
+        );
+    }
 
 
 }

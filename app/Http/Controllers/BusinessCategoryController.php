@@ -6,13 +6,31 @@ use App\Enums\HttpStatusCode;
 use App\Models\BusinessCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class BusinessCategoryController extends Controller
 {
     //
-    public function index() : JsonResponse
+    public function index(Request $request) : JsonResponse
     {
-        $busCat = BusinessCategory::all();
+        $busCat = QueryBuilder::for(BusinessCategory::class)
+            ->allowedFilters([
+                'name',
+                'description'
+            ])
+            ->allowedSorts([
+                'name',
+                'description'
+            ])
+            ->allowedFields([
+                'name',
+                'description'
+            ])
+            ->allowedIncludes([
+                'businesses'
+            ])
+
+            ->paginate(25);
 
         return $this->success(
             message: 'All Business Categories',
@@ -57,14 +75,15 @@ class BusinessCategoryController extends Controller
 
     // function update
 
-    public function update(Request $request, $id) : JsonResponse
+    public function update(Request $request,int $id) : JsonResponse
     {
+
         $busCat = BusinessCategory::find($id);
-        if($busCat){
-            $busCat->name = $request->data['attributes']['name'];
-            $busCat->description = $request->data['attributes']['description'];
-            $busCat->save();
-        }
+        /** @var BusinessCategory  $busCat*/
+
+        $busCat->name = $request->data['attributes']['name'];
+        $busCat->description = $request->data['attributes']['description'];
+        $busCat->save();
 
         return $this->success(
             message: 'Business Category Updated',
@@ -77,7 +96,7 @@ class BusinessCategoryController extends Controller
 
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $busCat = BusinessCategory::find($id);
         return $this->success(
@@ -91,9 +110,9 @@ class BusinessCategoryController extends Controller
         );
     }
 
-    public function destroy($id) :JsonResponse
+    public function destroy(int $id) :JsonResponse
     {
-        $busCat = BusinessCategory::find($id)->delete();
+        $busCat = BusinessCategory::findOrFail($id)->delete();
         return $this->success(
             message: 'Business Category Deleted',
             data: [

@@ -12,4 +12,5 @@ enum HttpStatusCode: int
     case NOT_FOUND = 404;
     case VALIDATION_ERROR = 422;
     case SERVER_ERROR = 500;
+    case UNPROCESSABLE_ENTITY = 502;
 }

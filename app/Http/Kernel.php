@@ -69,7 +69,7 @@ class Kernel extends HttpKernel
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'cors' => \App\Http\Middleware\Cors::class,
-        'json.response' => \App\Http\Middleware\ForceJsonResponse::class /** @phpstan-ignore-line */,
+        'json.response' => \App\Http\Middleware\ForceJsonReponse::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,

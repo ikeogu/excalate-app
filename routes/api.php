@@ -33,9 +33,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/register_super_admin', [AuthController::class, 'registerSuperAdmin'])->name('rsadmin');
         Route::post('/verify_otp', [AuthController::class, 'verifyOtp'])->name('verify_otp');
 
+        Route::group(['middleware' => ['auth:sanctum']], function () {
         // tokens
-        Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-        Route::post('/logout', [AuthController::class, 'logout']);
+            Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+            Route::delete('logout', [AuthController::class, 'logout']);
+        });
         // get access token
         Route::post('/access_token', [AuthController::class, 'getAccessToken'])->name('token');
     // Authentication Routes

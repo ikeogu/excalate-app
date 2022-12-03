@@ -27,14 +27,6 @@ class UserController extends Controller
     public function index(HttpRequest $request) : JsonResponse
     {
 
-        /*  $filter = $request->query('filter');
-        $include = $request->query('include');
-        $sort = $request->query('sort');
-        $fields = $request->query('fields');
-
-        $offset = $page['offset'] ?? 25;
-
-        $number = $page['number'] ?? 1; */
         $page = $request->query('page');
         $size = $page['size'] ?? 25;
 

@@ -11,7 +11,7 @@ class VerificationService
 {
     public static function generateAndSendOtp(User $user): void
     {
-        $otp = rand(1000, 9999);
+        $otp = rand(100000, 999999);
 
         DB::transaction(function () use ($user, $otp) {
             EmailVerification::updateOrCreate(

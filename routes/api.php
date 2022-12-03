@@ -6,8 +6,9 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\SocialLite\FacebookController;
 use App\Http\Controllers\API\User\UserController;
 use App\Http\Controllers\BusinessCategoryController;
-use App\Models\BusinessCategory;
-use Laravel\Passport\Passport;
+use App\Http\Controllers\BusinessProfileController;
+use App\Http\Controllers\ContactController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,21 +22,23 @@ use Laravel\Passport\Passport;
 */
 
 Route::prefix('v1')->group(function () {
-    // Authentication Routes
+
+
 
     Route::prefix('auth')->group(function () {
 
-        Route::post('/login', [AuthController::class, 'login'])->name('login');
-        Route::post('/registeruser', [AuthController::class, 'registerUser'])->name('ruser');
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/register', [AuthController::class, 'registerUser'])->name('ruser');
         Route::post('/register_admin', [AuthController::class, 'registerAdmin'])->name('radmin');
         Route::post('/register_super_admin', [AuthController::class, 'registerSuperAdmin'])->name('rsadmin');
         Route::post('/verify_otp', [AuthController::class, 'verifyOtp'])->name('verify_otp');
 
         // tokens
         Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('/logout', [AuthController::class, 'logout']);
         // get access token
         Route::post('/access_token', [AuthController::class, 'getAccessToken'])->name('token');
+    // Authentication Routes
 
     });
 
@@ -48,28 +51,61 @@ Route::prefix('v1')->group(function () {
     //user routes
 
     //Auth routes
-    Route::group(['middleware' => ['auth:api']], static function () {
+    Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
 
-        Route::prefix('users')->group(function () {
+        Route::prefix('admin')->group(function(){
 
-            Route::get('/', [UserController::class, 'index'])->name('user.index');
+            Route::prefix('users')->group(function () {
+
+                Route::get('/', [UserController::class, 'index'])->name('user.index');
+                Route::get('/{id}', [UserController::class, 'getUserById'])->name('user.show');
+                Route::post('/{id}', [UserController::class, 'store'])->name('user.store');
+                Route::patch('/{id}', [UserController::class, 'update'])->name('update_profile');
+                Route::post('/update_password', [UserController::class, 'updatePassword'])->name('update_password');
+                Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+            });
+
+            Route::prefix('occupational-categories')->group(function () {
+
+                Route::get('/', [BusinessCategoryController::class, 'index'])->name('busCat.index');
+                Route::get('/{id}', [BusinessCategoryController::class, 'show'])->name('busCat.show');
+                Route::post('/', [BusinessCategoryController::class, 'store'])->name('busCat.store');
+                Route::patch('/{id}', [BusinessCategoryController::class, 'update'])->name('busCat.update');
+                Route::delete('/{id}', [BusinessCategoryController::class, 'destroy'])->name('busCat.destroy');
+            });
+
+        });
+        //users routes
+    });
+
+    Route::group(['middleware' => ['auth:sanctum', 'abilities:admin,user']], static function () {
+
+        Route::prefix('user')->group(function () {
+
             Route::get('/{id}', [UserController::class, 'getUserById'])->name('user.show');
-            Route::post('/{id}', [UserController::class, 'store'])->name('user.store');
             Route::patch('/{id}', [UserController::class, 'update'])->name('update_profile');
             Route::post('/update_password', [UserController::class, 'updatePassword'])->name('update_password');
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         });
 
-        Route::prefix('occupational-categories')->group(function () {
+        Route::prefix('business-profile')->group(function () {
 
-            Route::get('/', [BusinessCategoryController::class, 'index'])->name('busCat.index');
-            Route::get('/{id}', [BusinessCategoryController::class, 'show'])->name('busCat.show');
-            Route::post('/', [BusinessCategoryController::class, 'store'])->name('busCat.store');
-            Route::patch('/{id}', [BusinessCategoryController::class, 'update'])->name('busCat.update');
-            Route::delete('/{id}', [BusinessCategoryController::class, 'destroy'])->name('busCat.destroy');
+            Route::get('/', [BusinessProfileController::class, 'index'])->name('busProf.index');
+            Route::get('/{id}', [BusinessProfileController::class, 'show'])->name('busProf.show');
+            Route::post('/', [BusinessProfileController::class, 'store'])->name('busProf.store');
+            Route::patch('/{id}', [BusinessProfileController::class, 'update'])->name('busProf.update');
+            Route::delete('/{id}', [BusinessProfileController::class, 'destroy'])->name('busProf.destroy');
+        });
+
+        Route::prefix('contact')->group(function () {
+
+            Route::get('/', [ContactController::class, 'index'])->name('contact.index');
+            Route::get('/{id}', [ContactController::class, 'show'])->name('contact.show');
+            Route::post('/', [ContactController::class, 'store'])->name('contact.store');
+            Route::patch('/{id}', [ContactController::class, 'update'])->name('contact.update');
+            Route::delete('/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
         });
 
     });
-
 
 });

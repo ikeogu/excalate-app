@@ -61,7 +61,6 @@ class UserController extends Controller
                 'created_at',
                 'updated_at',
             )->
-            allowedIncludes('roles')->
             allowedFields(
                 'id',
                 'email',
@@ -73,6 +72,8 @@ class UserController extends Controller
                 'created_at',
                 'updated_at',
             )->
+            allowedIncludes('role')->
+
             paginate($size);
 
         return $this->success(
@@ -137,22 +138,28 @@ class UserController extends Controller
 
     public function updatePassword(PasswordUpdateRequest $request): JsonResponse
     {
-        /** @var User $loggedUser */
-        $loggedUser = auth()->user();
+        /** @var User $user */
+        $user = $request->user();
 
-        if (!Hash::check($request->old_password, $loggedUser->password)) {
-            throw ValidationException::withMessages([
-                'password' => ['Incorrect Password!'],
-            ]);
+        if (!Hash::check($request->old_password, $user->password)) {
+            return $this->success(
+                message: 'Old password is incorrect',
+                status: HttpStatusCode::UNPROCESSABLE_ENTITY->value
+            );
+
         }
 
-        $loggedUser->update([
-            'password' => Hash::make($request->new_password),
+        $user->update([
+            'password' => Hash::make($request->password),
         ]);
 
         return $this->success(
-            message: 'Password Updated successfully',
-            data: [new UserResource($loggedUser)]
+            message: "Password updated successfully",
+            data: [
+                'type' => 'user',
+                'id' => $user->id,
+                'attributes' => new UserResource($user)],
+            status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
@@ -164,6 +171,22 @@ class UserController extends Controller
             message: "User deleted successfully",
             status: HttpStatusCode::SUCCESSFUL->value
         );
+   }
 
+   //get user by id
+
+   public function getUserById(HttpRequest $request,int $id): JsonResponse
+   {
+       /** @var User */
+       $user = User::find($id);
+
+       return $this->success(
+           message: "User listed successfully",
+           data: [
+               'type' => 'user',
+               'id' => $user->id,
+               'attributes' => new UserResource($user)],
+           status: HttpStatusCode::SUCCESSFUL->value
+       );
    }
 }

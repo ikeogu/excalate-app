@@ -30,7 +30,6 @@ return new class extends Migration
             $table->decimal('lat', 10, 7)->nullable();
             $table->integer('status')->nullable();
             $table->integer('role');
-            $table->string('nin');
             $table->rememberToken();
             $table->timestamps();
         });

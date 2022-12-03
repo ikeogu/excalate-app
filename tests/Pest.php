@@ -20,7 +20,7 @@ use Laravel\Passport\Passport;
 uses(Tests\TestCase::class, RefreshDatabase::class)->in('Feature');
 uses(Tests\TestCase::class)->in('Unit');
 uses()->beforeEach(function () {
-    Artisan::call('passport:install');
+    // Artisan::call('passport:install');
     //app(DatabaseSeeder::class)->call(RolePermissionSeeder::class);
 })->in('Feature');
 

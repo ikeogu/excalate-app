@@ -60,11 +60,11 @@ Route::prefix('v1')->group(function () {
             Route::prefix('users')->group(function () {
 
                 Route::get('/', [UserController::class, 'index'])->name('user.index');
-                Route::get('/{id}', [UserController::class, 'getUserById'])->name('user.show');
-                Route::post('/{id}', [UserController::class, 'store'])->name('user.store');
-                Route::patch('/{id}', [UserController::class, 'update'])->name('update_profile');
-                Route::post('/update_password', [UserController::class, 'updatePassword'])->name('update_password');
-                Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+                Route::get('/{id}', [UserController::class, 'getUserById']);
+                Route::post('/{id}', [UserController::class, 'store']);
+                Route::patch('/{id}', [UserController::class, 'update']);
+                Route::post('/update_password', [UserController::class, 'updatePassword']);
+                Route::delete('/{id}', [UserController::class, 'destroy']);
             });
 
             Route::prefix('occupational-categories')->group(function () {
@@ -85,7 +85,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('user')->group(function () {
 
             Route::get('/{id}', [UserController::class, 'getUserById'])->name('user.show');
-            Route::patch('/{id}', [UserController::class, 'update'])->name('update_profile');
+            Route::patch('/{id}', [UserController::class, 'update']);
             Route::post('/update_password', [UserController::class, 'updatePassword'])->name('update_password');
             Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         });

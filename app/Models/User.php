@@ -42,7 +42,7 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at'
     ];
 
-    protected $with = ['business_profile', 'contacts','avatar'];
+    protected $with = ['business_profile', 'contacts'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -65,7 +65,7 @@ class User extends Authenticatable implements HasMedia
     protected $appends = [
         'full_name',
         'is_verified',
-        'avatar',
+        'profile_picture',
         'role'
     ];
 
@@ -76,7 +76,7 @@ class User extends Authenticatable implements HasMedia
     }
 
     /** @codeCoverageIgnore */
-    protected function profile_picture(): Attribute
+    protected function profilePicture(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->getFirstMediaUrl('avatar') ?: null

@@ -222,10 +222,11 @@ class AuthController extends  Controller
 
 
     //sanctum logout
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
+
         /** @phpstan-ignore-next-line */
-        $request->user()->tokens()->delete();
+        auth()->user()->tokens()->delete();
 
         return $this->success(
             message: 'Logout successful'
@@ -234,21 +235,26 @@ class AuthController extends  Controller
 
     // get access token sanctum
 
-    public function accessToken() : JsonResponse
+    public function getAccessToken(Request $request) : JsonResponse
     {
-        /** @var User */
-        $user = auth()->user();
-        $token = $user->createToken("$user->first_name $user->last_name token")->
-        accessToken;
+        $user = User::where('email', $request->data['email'])->first();
+
+        if (!$user || !Hash::check($request->data['password'], $user->password)) {
+            return $this->success(
+                message: 'The provided credentials are incorrect.',
+                status: HttpStatusCode::FORBIDDEN->value
+            );
+        }
+
+        $token = $user->createToken("API Token")->plainTextToken;
 
         return $this->success(
-            message: 'Login suceessful',
+            message: 'Access token generated',
             data: [
                 'type' => 'user',
                 'id' => $user->id,
-                'attribute' => new UserResource($user),
                 'token' => $token,
-
+                'attribute' => $user,
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

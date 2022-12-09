@@ -17,6 +17,7 @@ use App\Services\VerificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -214,12 +215,14 @@ class AuthController extends  Controller
     }
 
 
-    //sanctum logout
     public function logout(): JsonResponse
     {
 
-        /** @phpstan-ignore-next-line */
-        auth()->user()->tokens()->delete();
+
+        //laravel passport logout method
+         /** @phpstan-ignore-next-line */
+        auth()->user()->token()->revoke();
+
 
         return $this->success(
             message: 'Logout successful'

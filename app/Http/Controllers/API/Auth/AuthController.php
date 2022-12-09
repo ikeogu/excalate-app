@@ -27,24 +27,20 @@ use Laravel\Passport\TokenRepository;
 class AuthController extends  Controller
 {
 
-    /**
-     * @return JsonResponse
-     */
 
     public function registerSuperAdmin(RegistrationRequest $request): JsonResponse
     {
+
         return $this->register($request, 1);
     }
 
     public function registerUser(RegistrationRequest $request) : JsonResponse
     {
-
         return $this->register($request, 3);
     }
 
     public function registerAdmin(RegistrationRequest $request) : JsonResponse
     {
-        $request = $request->data['attributes'];
         return $this->register($request, 2);
     }
 
@@ -73,7 +69,8 @@ class AuthController extends  Controller
         if($request->has('data.relationships')){
             $businessInput = $request->validated()['data']['relationships']['business']['data'];
             $businessInput['user_id'] = $user->id;
-            $businessInput['business_category_id'] = $request->validated()['data']['relationships']['business']['data']['category_id'];
+            $businessInput['business_category_id'] =
+                $request->validated()['data']['relationships']['business']['data']['category_id'];
 
             $user->business_profile()->create(Arr::except(
                 $businessInput,'category_id'));
@@ -82,7 +79,7 @@ class AuthController extends  Controller
 
         $accessToken = $user->createToken("API Token",
             ($user->role =="super admin" || $user->role == "admin") ? ['admin']: ['user'])->
-            plainTextToken;
+            accessToken;
 
         VerificationService::generateAndSendOtp($user);
 
@@ -119,7 +116,7 @@ class AuthController extends  Controller
 
         $accessToken = $user->createToken("API Token",
             ($user->role == "super admin" || $user->role == "admin") ? ['admin'] : ['user'])->
-                plainTextToken;
+                accessToken;
 
         return $this->success(
             message: 'Login suceessful',
@@ -246,7 +243,7 @@ class AuthController extends  Controller
             );
         }
 
-        $token = $user->createToken("API Token")->plainTextToken;
+        $token = $user->createToken("API Token")->accessToken;
 
         return $this->success(
             message: 'Access token generated',

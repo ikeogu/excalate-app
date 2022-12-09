@@ -9,11 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Passport\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Laravel\Sanctum\HasApiTokens;
-use Maatwebsite\Excel\Concerns\WithLimit;
+
 
 class User extends Authenticatable implements HasMedia
 {
@@ -120,5 +120,10 @@ class User extends Authenticatable implements HasMedia
     public function contacts() : HasMany
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function user_proximity_plans() : HasMany
+    {
+        return $this->hasMany(UserProximityPlan::class);
     }
 }

@@ -42,7 +42,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profiles',
             data: [
-                'type' => 'busness profile',
+                'type' => 'busness_profile',
                 'attributes' => [$businessProfiles],
 
             ],
@@ -69,7 +69,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'New Business Profile',
             data: [
-                'type' => 'busness profile',
+                'type' => 'busness_profile',
                 'attributes' => [new BusinessProfileResource($businessProfile)],
 
             ],
@@ -86,7 +86,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profile',
             data: [
-                'type' => 'busness profile',
+                'type' => 'busness_profile',
                 'attributes' => [ new BusinessProfileResource($businessProfile) ],
 
             ],
@@ -113,7 +113,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profile Updated',
             data: [
-                'type' => 'busness profile',
+                'type' => 'busness_profile',
                 'attributes' => [new BusinessProfileResource($businessProfile)],
 
             ],
@@ -131,8 +131,46 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profile Deleted',
             data: [
-                'type' => 'busness profile',
+                'type' => 'busness_profile',
                 'attributes' => [new BusinessProfileResource($businessProfile)],
+
+            ],
+            status: HttpStatusCode::SUCCESSFUL->value
+        );
+    }
+
+    //user business profile
+
+    public function userProfile(int $id) : JsonResponse
+    {
+        //
+        $businessProfile = QueryBuilder::for(BusinessProfile::class)->
+            allowedFilters([
+                'name',
+                'description',
+                'business_category_id'
+            ])->
+            allowedSorts([
+                'name',
+                'description',
+                'business_category_id'
+            ])->
+            allowedIncludes([
+                'business_category'
+            ])->
+            allowedFields([
+                'name',
+                'description',
+                'business_category_id'
+            ])->
+            where('user_id', $id)->
+            paginate(25);
+
+        return $this->success(
+            message: 'Business Profiles',
+            data: [
+                'type' => 'busness_profile',
+                'attributes' => [$businessProfile],
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value

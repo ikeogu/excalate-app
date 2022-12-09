@@ -34,9 +34,8 @@ class AuthController extends  Controller
         return $this->register($request, 1);
     }
 
-    public function registerUser(Request $request) : JsonResponse
+    public function registerUser(RegistrationRequest $request) : JsonResponse
     {
-        dd("here");
         return $this->register($request, 3);
     }
 
@@ -53,7 +52,7 @@ class AuthController extends  Controller
      */
     public function register(RegistrationRequest $request,  int $role) : JsonResponse
     {
-        dd($request->validated());
+
         $input = $request->validated()['data']['attributes'];
 
         $input['password'] = bcrypt($input['password']);
@@ -80,7 +79,7 @@ class AuthController extends  Controller
 
         $accessToken = $user->createToken("API Token",
             ($user->role =="super admin" || $user->role == "admin") ? ['admin']: ['user'])->
-            plainTextToken;
+            accessToken;
 
         VerificationService::generateAndSendOtp($user);
 
@@ -117,7 +116,7 @@ class AuthController extends  Controller
 
         $accessToken = $user->createToken("API Token",
             ($user->role == "super admin" || $user->role == "admin") ? ['admin'] : ['user'])->
-                plainTextToken;
+                accessToken;
 
         return $this->success(
             message: 'Login suceessful',
@@ -244,7 +243,7 @@ class AuthController extends  Controller
             );
         }
 
-        $token = $user->createToken("API Token")->plainTextToken;
+        $token = $user->createToken("API Token")->accessToken;
 
         return $this->success(
             message: 'Access token generated',

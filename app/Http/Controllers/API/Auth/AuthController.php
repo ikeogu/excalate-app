@@ -77,9 +77,7 @@ class AuthController extends  Controller
 
         }
 
-        $accessToken = $user->createToken("API Token",
-            ($user->role =="super admin" || $user->role == "admin") ? ['admin']: ['user'])->
-            accessToken;
+        $accessToken =$user->createToken("$user->first_name $user->last_name token")->accessToken;
 
         VerificationService::generateAndSendOtp($user);
 
@@ -114,9 +112,7 @@ class AuthController extends  Controller
             );
         }
 
-        $accessToken = $user->createToken("API Token",
-            ($user->role == "super admin" || $user->role == "admin") ? ['admin'] : ['user'])->
-                accessToken;
+        $accessToken = $user->createToken("$user->first_name $user->last_name token")->accessToken;
 
         return $this->success(
             message: 'Login suceessful',

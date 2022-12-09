@@ -44,7 +44,7 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
             Route::post('/otp/verify_otp', [AuthController::class, 'verifyOtp'])->
                 name('verify_otp');
 
-            Route::group(['middleware' => ['auth:sanctum']], function () {
+            Route::group(['middleware' => ['auth:api']], function () {
             // tokens
                 Route::post('/refresh', [AuthController::class, 'refresh'])->
                     name('refresh');

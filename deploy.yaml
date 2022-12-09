@@ -28,7 +28,6 @@ tasks:
     - deploy:vendors
     - artisan:storage:link
     - artisan:optimize:clear
-    - artisan:passport:keys
     - artisan:migrate
     - artisan:optimize
     - deploy:publish

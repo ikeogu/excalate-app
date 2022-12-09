@@ -27,24 +27,21 @@ use Laravel\Passport\TokenRepository;
 class AuthController extends  Controller
 {
 
-    /**
-     * @return JsonResponse
-     */
 
     public function registerSuperAdmin(RegistrationRequest $request): JsonResponse
     {
+
         return $this->register($request, 1);
     }
 
-    public function registerUser(RegistrationRequest $request) : JsonResponse
+    public function registerUser(Request $request) : JsonResponse
     {
-
+        dd("here");
         return $this->register($request, 3);
     }
 
     public function registerAdmin(RegistrationRequest $request) : JsonResponse
     {
-        $request = $request->data['attributes'];
         return $this->register($request, 2);
     }
 
@@ -56,7 +53,7 @@ class AuthController extends  Controller
      */
     public function register(RegistrationRequest $request,  int $role) : JsonResponse
     {
-
+        dd($request->validated());
         $input = $request->validated()['data']['attributes'];
 
         $input['password'] = bcrypt($input['password']);
@@ -73,7 +70,8 @@ class AuthController extends  Controller
         if($request->has('data.relationships')){
             $businessInput = $request->validated()['data']['relationships']['business']['data'];
             $businessInput['user_id'] = $user->id;
-            $businessInput['business_category_id'] = $request->validated()['data']['relationships']['business']['data']['category_id'];
+            $businessInput['business_category_id'] =
+                $request->validated()['data']['relationships']['business']['data']['category_id'];
 
             $user->business_profile()->create(Arr::except(
                 $businessInput,'category_id'));

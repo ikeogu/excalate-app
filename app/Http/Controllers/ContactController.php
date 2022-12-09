@@ -22,7 +22,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contacts',
             data: [
-                'type' => 'contact',
+                'type' => 'emergency_contacts',
                 'attributes' => $contacts,
 
             ],
@@ -44,7 +44,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'New Contact',
             data: [
-                'type' => 'contact',
+                'type' => 'emergency_contacts',
                 'attributes' => $contact,
 
             ],
@@ -65,7 +65,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact',
             data: [
-                'type' => 'contact',
+                'type' => 'emergency_contacts',
                 'attributes' => $contact,
 
             ],
@@ -87,7 +87,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact Updated',
             data: [
-                'type' => 'contact',
+                'type' => 'emergency_contacts',
                 'attributes' => $contact,
 
             ],
@@ -107,7 +107,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact Deleted',
             data: [
-                'type' => 'contact',
+                'type' => 'emergency_contacts',
                 'attributes' => $contact,
 
             ],

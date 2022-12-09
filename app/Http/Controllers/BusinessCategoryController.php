@@ -35,7 +35,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'All Business Categories',
             data: [
-                'type' => 'business category',
+                'type' => 'business_category',
                 'attribute' => [$busCat],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -56,7 +56,7 @@ class BusinessCategoryController extends Controller
             return $this->success(
                 message: 'New Business Categories',
                 data: [
-                    'type' => 'business category',
+                    'type' => 'business_category',
                     'attribute' => [$busCat],
                 ],
                 status: HttpStatusCode::CREATED->value
@@ -88,7 +88,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Updated',
             data: [
-                'type' => 'Business Category',
+                'type' => 'business_category',
                 'attribute' => [$busCat]
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -102,7 +102,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Deleted',
             data: [
-                'type' => 'Business Category',
+                'type' => 'business_category',
                 'attributes' => [$busCat]
 
             ],
@@ -116,7 +116,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Deleted',
             data: [
-                'type' => 'Business Category',
+                'type' => 'business_category',
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value

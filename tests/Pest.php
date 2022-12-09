@@ -12,6 +12,8 @@
 */
 
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -20,10 +22,9 @@ use Laravel\Passport\Passport;
 uses(Tests\TestCase::class, RefreshDatabase::class)->in('Feature');
 uses(Tests\TestCase::class)->in('Unit');
 uses()->beforeEach(function () {
-    // Artisan::call('passport:install');
-    //app(DatabaseSeeder::class)->call(RolePermissionSeeder::class);
+    Artisan::call('passport:install');
+    app(DatabaseSeeder::class)->call(RolePermissionSeeder::class);
 })->in('Feature');
-
 
 /*
 |--------------------------------------------------------------------------

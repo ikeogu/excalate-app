@@ -9,30 +9,6 @@ use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 
-beforeEach(function () {
-    Notification::fake();
-});
-
-it('register successfully', function () {
-    $data = [
-        'first_name' => 'Ibrahim',
-        'last_name' => 'Lasisi',
-        'email' => 'ilasisi90@gmail.com',
-        'password' => 'Password1!',
-        'c_password' => 'Password1!',
-        'phone_number' => '08012345678',
-    ];
-
-    $response = $this->post(route('ruser'), $data);
-    
-    $response->assertStatus(HttpStatusCode::SUCCESSFUL->value);
-
-    assertDatabaseCount('users', 1);
-
-    assertDatabaseHas('users', Arr::except($data, ['c_password','password']));
-    //assertDatabaseCount('email_verifications', 1);
-});
-
  it('cannot register if validation error', function () {
     $data = [
         'first_name' => 'Ibrahim',

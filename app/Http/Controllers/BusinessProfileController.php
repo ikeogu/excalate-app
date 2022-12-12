@@ -166,13 +166,11 @@ class BusinessProfileController extends Controller
             );
         } catch (\Throwable $th) {
             //throw $th;
-
             return $this->failure(
                 message: $th->getMessage(),
                 status: HttpStatusCode::BAD_REQUEST->value
             );
         }
-
 
     }
 

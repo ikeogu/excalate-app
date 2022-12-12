@@ -85,7 +85,6 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                     name('user.destroy');
             });
 
-
             Route::apiResource('user/business-profile', BusinessProfileController::class);
             Route::apiResource('proximity-plans',ProximityPlanController::class);
             Route::apiResource('business-categories',BusinessCategoryController::class);

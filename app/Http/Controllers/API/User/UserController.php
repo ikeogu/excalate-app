@@ -171,7 +171,12 @@ class UserController extends Controller
    {
        /** @var User */
        $user = User::findOrFail($id);
-
+        if(!$user){
+            return $this->failure(
+                message: "User not found",
+                status: HttpStatusCode::NOT_FOUND->value
+            );
+        }
        return $this->success(
            message: "User listed successfully",
            data: [

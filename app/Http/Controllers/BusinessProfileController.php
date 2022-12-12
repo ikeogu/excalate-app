@@ -56,26 +56,38 @@ class BusinessProfileController extends Controller
     public function store(BusinessProfileRequest $request) : JsonResponse
     {
 
-        $input = $request->validated()['data']['attributes'];
 
-        $businessProfile = BusinessProfile::create($input);
+        try {
+            //code...
+            $input = $request->validated()['data']['attributes'];
+            $input['business_category_id'] = $request->validated()['data']['relationships']['business'] ['business_category_id'];
 
-        $user = auth()->user();
-        $category = BusinessCategory::find($input['busness_cat_id']);
+            $businessProfile = BusinessProfile::create($input);
 
-        $businessProfile->user()->associate($user);
-        $businessProfile->business_category()->associate($category);
+            $user = auth()->user();
+            $category = BusinessCategory::find($input['business_category_id']);
+
+            $businessProfile->user()->associate($user);
+            $businessProfile->business_category()->associate($category);
 
 
-        return $this->success(
-            message: 'New Business Profile',
-            data: [
-                'type' => 'busness_profile',
-                'attributes' => [new BusinessProfileResource($businessProfile)],
+            return $this->success(
+                message: 'New Business Profile',
+                data: [
+                    'type' => 'busness_profile',
+                    'attributes' => [new BusinessProfileResource($businessProfile)],
 
-            ],
-            status: HttpStatusCode::CREATED->value
-        );
+                ],
+                status: HttpStatusCode::CREATED->value
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return $this->failure(
+                message: $th->getMessage(),
+                status: HttpStatusCode::BAD_REQUEST->value
+            );
+        }
 
     }
 
@@ -84,15 +96,26 @@ class BusinessProfileController extends Controller
     public function show(BusinessProfile $businessProfile) : JsonResponse
     {
         //
-        return $this->success(
-            message: 'Business Profile',
-            data: [
-                'type' => 'busness_profile',
-                'attributes' => [ new BusinessProfileResource($businessProfile) ],
+        try {
+            //code...
+            return $this->success(
+                message: 'Business Profile',
+                data: [
+                    'type' => 'busness_profile',
+                    'attributes' => [new BusinessProfileResource($businessProfile)],
 
-            ],
-            status: HttpStatusCode::SUCCESSFUL->value
-        );
+                ],
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return $this->failure(
+                message: $th->getMessage(),
+                status: HttpStatusCode::BAD_REQUEST->value
+            );
+        }
+
     }
 
     //update function
@@ -127,17 +150,30 @@ class BusinessProfileController extends Controller
     public function destroy(BusinessProfile $businessProfile) : JsonResponse
     {
         //
-        $businessProfile->delete();
 
-        return $this->success(
-            message: 'Business Profile Deleted',
-            data: [
-                'type' => 'busness_profile',
-                'attributes' => [new BusinessProfileResource($businessProfile)],
+        try {
+            //code...
+            $businessProfile->delete();
 
-            ],
-            status: HttpStatusCode::SUCCESSFUL->value
-        );
+            return $this->success(
+                message: 'Business Profile Deleted',
+                data: [
+                    'type' => 'busness_profile',
+                    'attributes' => [new BusinessProfileResource($businessProfile)],
+
+                ],
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return $this->failure(
+                message: $th->getMessage(),
+                status: HttpStatusCode::BAD_REQUEST->value
+            );
+        }
+
+
     }
 
     //user business profile

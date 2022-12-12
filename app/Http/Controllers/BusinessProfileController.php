@@ -29,13 +29,14 @@ class BusinessProfileController extends Controller
                 'description',
                 'business_category_id'
             ])->
-            allowedIncludes([
-                'business_category'
-            ])->
+
             allowedFields([
                 'name',
                 'description',
                 'business_category_id'
+            ])->
+            allowedIncludes([
+                'business_category'
             ])->
             paginate(25);
 

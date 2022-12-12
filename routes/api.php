@@ -72,7 +72,7 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
         Route::group(['middleware' => ['auth:api']],
              static function () {
 
-            Route::prefix('user')->group(function () {
+            Route::prefix('users')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->
                     name('user.index');
 

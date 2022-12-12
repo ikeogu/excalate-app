@@ -169,21 +169,26 @@ class UserController extends Controller
 
    public function getUserById(int $id): JsonResponse
    {
-       /** @var User */
-       $user = User::findOrFail($id);
-        if(!$user){
+
+       try {
+            //code...
+            /** @var User */
+            $user = User::findOrFail($id);
+            return $this->success(
+                message: "User listed successfully",
+                data: [
+                    'type' => 'user',
+                    'id' => $user->id,
+                    'attributes' => new UserResource($user)
+                ],
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+       } catch (\Throwable $th) {
+            //throw $th;
             return $this->failure(
-                message: "User not found",
+                message: $th->getMessage(),
                 status: HttpStatusCode::NOT_FOUND->value
             );
-        }
-       return $this->success(
-           message: "User listed successfully",
-           data: [
-               'type' => 'user',
-               'id' => $user->id,
-               'attributes' => new UserResource($user)],
-           status: HttpStatusCode::SUCCESSFUL->value
-       );
+       }
    }
 }

@@ -167,10 +167,10 @@ class UserController extends Controller
 
    //get user by id
 
-   public function getUserById(HttpRequest $request,int $id): JsonResponse
+   public function getUserById(int $id): JsonResponse
    {
        /** @var User */
-       $user = User::find($id);
+       $user = User::findOrFail($id);
 
        return $this->success(
            message: "User listed successfully",

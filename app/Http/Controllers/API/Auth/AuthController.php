@@ -227,13 +227,9 @@ class AuthController extends  Controller
 
     public function logout(): JsonResponse
     {
-
-
         //laravel passport logout method
          /** @phpstan-ignore-next-line */
         auth()->user()->token()->revoke();
-
-
         return $this->success(
             message: 'Logout successful'
         );

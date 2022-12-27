@@ -96,8 +96,8 @@ class AuthController extends  Controller
             data: [
                 'type' => 'user',
                 'attributes' => [
-                    'user' => $user,
                     'access_token' => $accessToken,
+                    'user' => $user
                 ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -131,9 +131,10 @@ class AuthController extends  Controller
             data: [
                 'type' => 'user',
                 'id' => $user->id,
-                'attribute' => $user,
-                'token' => $accessToken,
-
+                'attributes' => [
+                    'access_token' => $accessToken,
+                    'user' => $user
+                ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

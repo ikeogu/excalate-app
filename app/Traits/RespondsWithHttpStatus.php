@@ -6,6 +6,7 @@ use App\Enums\HttpStatusCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 
+
 trait RespondsWithHttpStatus
 {
     /**
@@ -14,7 +15,7 @@ trait RespondsWithHttpStatus
     protected function success(string $message, mixed $data = [], int $status = 200): JsonResponse
     {
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => $message,
             'data' => $data,
         ], $status);
@@ -23,7 +24,7 @@ trait RespondsWithHttpStatus
     protected function failure(string $message, int $status = 400): JsonResponse
     {
         return response()->json([
-            'success' => false,
+            'status' => 'error',
             'message' => $message,
         ], $status);
     }

@@ -20,7 +20,6 @@ class BusinessCategory extends Model
     {
         return $this->hasMany(User::class);
     }
-
     public function bussiness_profile() : HasMany
     {
         return $this->hasMany(BusinessProfile::class);

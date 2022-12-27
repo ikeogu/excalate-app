@@ -10,6 +10,7 @@ use App\Models\BusinessProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\User;
 
 class BusinessProfileController extends Controller
 {
@@ -61,10 +62,13 @@ class BusinessProfileController extends Controller
             $input = $request->validated()['data']['attributes'];
             $input['business_category_id'] = $request->validated()
                 ['data']['relationships']['business_category']['category_id'];
+            /** @var  User $user*/
+            $user = auth()->user();
+            $input['user_id'] = $user->id;
 
             $businessProfile = BusinessProfile::create($input);
 
-            $user = auth()->user();
+
             $category = BusinessCategory::find($input['business_category_id']);
 
             $businessProfile->user()->associate($user);

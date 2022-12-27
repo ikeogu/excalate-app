@@ -95,6 +95,7 @@ class AuthController extends  Controller
             message: 'Registration successful',
             data: [
                 'type' => 'user',
+                'id' => strval($user->id),
                 'attributes' => [
                     'access_token' => $accessToken,
                     'user' => $user
@@ -130,7 +131,7 @@ class AuthController extends  Controller
             message: 'Login suceessful',
             data: [
                 'type' => 'user',
-                'id' => $user->id,
+                'id' => strval($user->id),
                 'attributes' => [
                     'access_token' => $accessToken,
                     'user' => $user
@@ -256,9 +257,11 @@ class AuthController extends  Controller
             message: 'Access token generated',
             data: [
                 'type' => 'user',
-                'id' => $user->id,
-                'token' => $token,
-                'attribute' => $user,
+                'id' => strval($user->id),
+                'attributes' => [
+                    'access_token' => $token,
+                    'user' => $user
+                ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

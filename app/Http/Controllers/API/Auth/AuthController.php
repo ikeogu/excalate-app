@@ -126,14 +126,22 @@ class AuthController extends  Controller
 
         $accessToken = $user->createToken("$user->first_name
             $user->last_name token")->accessToken;
-            /** @phpstan-ignore-next-line */
-        $user->access_token = $accessToken;
 
         return $this->success(
             message: 'Login suceessful',
-            data: [
-                'access_token' => $accessToken,
-                new UserResource($user),
+            data: [ 'type' => 'user',
+                'id' => strval($user->id),
+                'attributes' => [
+                    'access_token' => $accessToken ,
+                    'user' => [
+                        'id' => strval($user->id),
+                        'name' => $user->full_name ?? '',
+                        'email' => $user->email,
+                        'email_verified_at' => $user->email_verified_at,
+                        'phone' => $user->phone_number ?? '',
+                        'role' => $user->role,
+                    ]
+                ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('qualifications')->nullable();
             $table->double('min_charge')->nullable();
             $table->string('service_type')->nullable();
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->foreignUuid('business_category_id')->constrained();
             $table->double('rating')->nullable();
             $table->string('status')->default('pending');

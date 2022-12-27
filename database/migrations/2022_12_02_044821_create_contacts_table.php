@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('relationship');
             $table->string('type');
             $table->string('status');
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

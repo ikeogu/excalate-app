@@ -26,7 +26,7 @@ class BusinessProfileRequest extends FormRequest
         return [
             //
 
-            'data.attributes.title' => 'required|string',
+            'data.attributes.name' => 'required|string',
             'data.attributes.location' => 'required|string',
             'data.attributes.lat' => 'nullable|numeric',
             'data.attributes.long' => 'nullable|numeric',

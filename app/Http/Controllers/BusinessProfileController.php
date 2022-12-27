@@ -56,7 +56,6 @@ class BusinessProfileController extends Controller
     public function store(BusinessProfileRequest $request) : JsonResponse
     {
 
-
         try {
             //code...
             $input = $request->validated()['data']['attributes'];

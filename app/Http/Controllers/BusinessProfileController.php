@@ -44,9 +44,8 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profiles',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => [$businessProfiles],
 
+                BusinessProfileResource::collection($businessProfiles)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -79,7 +78,7 @@ class BusinessProfileController extends Controller
             return $this->success(
                 message: 'New Business Profile',
                 data: [
-                    'type' => 'busness_profile',
+
                     new BusinessProfileResource($businessProfile),
 
                 ],
@@ -106,8 +105,7 @@ class BusinessProfileController extends Controller
             return $this->success(
                 message: 'Business Profile',
                 data: [
-                    'type' => 'busness_profile',
-                    'attributes' => [new BusinessProfileResource($businessProfile)],
+                    new BusinessProfileResource($businessProfile),
 
                 ],
                 status: HttpStatusCode::SUCCESSFUL->value
@@ -142,8 +140,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profile Updated',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => [new BusinessProfileResource($businessProfile)],
+              new BusinessProfileResource($businessProfile)
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -163,8 +160,7 @@ class BusinessProfileController extends Controller
             return $this->success(
                 message: 'Business Profile Deleted',
                 data: [
-                    'type' => 'busness_profile',
-                    'attributes' => [new BusinessProfileResource($businessProfile)],
+                  new BusinessProfileResource($businessProfile)
 
                 ],
                 status: HttpStatusCode::SUCCESSFUL->value
@@ -209,9 +205,7 @@ class BusinessProfileController extends Controller
         return $this->success(
             message: 'Business Profiles',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => [$businessProfile],
-
+                BusinessProfileResource::collection($businessProfile)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

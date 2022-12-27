@@ -19,6 +19,7 @@ class BusinessProfileResource extends JsonResource
         /** @var User $user */
         $user = User::findOrFail($this->user_id);
         return [
+            'type' => 'busness_profile',
             'attributes'=>[
                 'id' => $this->id,
                 'name' => $this->name,
@@ -35,18 +36,18 @@ class BusinessProfileResource extends JsonResource
 
                     'data' =>[
                         'type' => 'user',
-                        'id' => strval($user->id),
+                        'id' => $user->id,
                     ]
                 ],
                 'business_category' => [
                     'data' => [
                         'type' => 'business_category',
-                        'id' => strval($this->business_category_id),
+                        'id' => $this->business_category_id,
                     ]
                 ],
 
             ],
-          
+
         ];
     }
 }

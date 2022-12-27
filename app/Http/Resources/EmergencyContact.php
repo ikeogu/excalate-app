@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
-/** @mixin \App\Models\UserProximityPlan */
-class UserProximityPlanResource extends JsonResource
+/** @mixin \App\Models\Contact */
+class EmergencyContact extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,14 +15,14 @@ class UserProximityPlanResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'user_proximity_plan',
+            'type' => 'emergency_contact',
             'id' => $this->id,
             'attributes' => [
                 'id' => $this->id,
-                'user_id' => $this->user_id,
-                'proximity_plan_id' => $this->proximity_plan_id,
-                //convert status to boolean
-                'status' => $this->status == 1 ? true : false,
+                'name' => $this->name,
+                'phone' => $this->phone,
+                'email' => $this->email,
+                'relationship' => $this->relationship,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ],
@@ -34,14 +33,7 @@ class UserProximityPlanResource extends JsonResource
                         'id' => $this->user_id,
                     ]
                 ],
-                'proximity_plan' => [
-                    'data' => [
-                        'type' => 'proximity_plan',
-                        'id' => $this->proximity_plan_id,
-                    ]
-                ],
             ],
-
         ];
     }
 }

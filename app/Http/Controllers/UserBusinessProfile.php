@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusCode;
+use App\Http\Resources\BusinessProfileResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,9 +20,7 @@ class UserBusinessProfile extends Controller
         return $this->success(
             message: 'Business Profiles',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => [$businessProfiles],
-
+               BusinessProfileResource::collection($businessProfiles)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -37,9 +36,7 @@ class UserBusinessProfile extends Controller
         return $this->success(
             message: 'New Business Profile',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => $businessProfile,
-
+                new BusinessProfileResource($businessProfile)
             ],
             status: HttpStatusCode::CREATED->value
         );
@@ -57,9 +54,7 @@ class UserBusinessProfile extends Controller
         return $this->success(
             message: 'Business Profile Updated',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => $businessProfile,
-
+               new BusinessProfileResource($businessProfile)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -76,9 +71,7 @@ class UserBusinessProfile extends Controller
         return $this->success(
             message: 'Business Profile Deleted',
             data: [
-                'type' => 'busness_profile',
-                'attributes' => $businessProfile,
-
+                new BusinessProfileResource($businessProfile)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

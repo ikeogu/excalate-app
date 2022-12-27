@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'type' => 'user',
             'id' => strval($this->id),
             'attributes' => [
-                'access_token' => $this->access_token ?? '',
+                
                 'user' => [
                     'id' => strval($this->id),
                     'name' => $this->full_name ?? '',

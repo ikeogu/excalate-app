@@ -90,15 +90,19 @@ class AuthController extends  Controller
 
         $accessToken =$user->createToken("$user->first_name
             $user->last_name token")->accessToken;
-        /** @phpstan-ignore-next-line */
-        $user->access_token = $accessToken;
 
         VerificationService::generateAndSendOtp($user);
 
         return $this->success(
             message: 'Registration successful',
             data: [
-                new UserResource($user),
+                (new UserResource($user))->with(
+                    [
+                        'attributes' => [
+                            'access_token' => $accessToken
+                        ]
+                    ]
+                )
             ],
 
             status: HttpStatusCode::SUCCESSFUL->value
@@ -129,19 +133,13 @@ class AuthController extends  Controller
 
         return $this->success(
             message: 'Login suceessful',
-            data: [ 'type' => 'user',
-                'id' => strval($user->id),
-                'attributes' => [
-                    'access_token' => $accessToken ,
-                    'user' => [
-                        'id' => strval($user->id),
-                        'name' => $user->full_name ?? '',
-                        'email' => $user->email,
-                        'email_verified_at' => $user->email_verified_at,
-                        'phone' => $user->phone_number ?? '',
-                        'role' => $user->role,
-                    ]
-                ],
+            data: [
+                (new UserResource($user))->with(
+                    [
+                        'attributes' => [
+                            'access_token' => $accessToken
+                        ]
+                    ])
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

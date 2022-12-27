@@ -27,8 +27,8 @@ class RegistrationRequest extends FormRequest
     {
         return [
 
-            'data.attributes.first_name' => ['required', 'string', 'max:255'],
-            'data.attributes.last_name' => ['required', 'string', 'max:255'],
+            'data.attributes.first_name' => ['nullable', 'string', 'max:255'],
+            'data.attributes.last_name' => ['nullable', 'string', 'max:255'],
             'data.attributes.gender' => ['nullable', 'string'],
             'data.attributes.address' => ['nullable', 'string'],
             'data.attributes.city' => ['nullable', 'string'],

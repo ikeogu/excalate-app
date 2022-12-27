@@ -36,7 +36,7 @@ class BusinessProfileResource extends JsonResource
 
                     'data' =>[
                         'type' => 'user',
-                        'id' => $user->id,
+                        'id' => strval($user->id),
                     ]
                 ],
                 'business_category' => [

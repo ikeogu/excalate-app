@@ -31,7 +31,7 @@ class UserProximityPlanResource extends JsonResource
                 'user' => [
                     'data' => [
                         'type' => 'user',
-                        'id' => $this->user_id,
+                        'id' => strval($this->user_id),
                     ]
                 ],
                 'proximity_plan' => [

@@ -30,7 +30,7 @@ class EmergencyContact extends JsonResource
                 'user' => [
                     'data' => [
                         'type' => 'user',
-                        'id' => $this->user_id,
+                        'id' => strval($this->user_id),
                     ]
                 ],
             ],

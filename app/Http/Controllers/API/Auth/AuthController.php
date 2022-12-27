@@ -127,11 +127,12 @@ class AuthController extends  Controller
         $accessToken = $user->createToken("$user->first_name
             $user->last_name token")->accessToken;
             /** @phpstan-ignore-next-line */
-            $user->access_token = $accessToken;
+        $user->access_token = $accessToken;
 
         return $this->success(
             message: 'Login suceessful',
             data: [
+                'access_token' => $accessToken,
                 new UserResource($user),
             ],
             status: HttpStatusCode::SUCCESSFUL->value

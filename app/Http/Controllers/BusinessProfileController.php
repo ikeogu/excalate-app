@@ -61,6 +61,7 @@ class BusinessProfileController extends Controller
             $input = $request->validated()['data']['attributes'];
             $input['business_category_id'] = $request->validated()
                 ['data']['relationships']['business_category']['category_id'];
+            $input['user_id'] = auth()->user()->id;
 
             $businessProfile = BusinessProfile::create($input);
 

@@ -20,6 +20,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Passport\RefreshTokenRepository;
 use Laravel\Passport\Token;
@@ -262,5 +263,36 @@ class AuthController extends  Controller
         );
     }
 
+
+    public function resetPassword(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:6',
+            'token' => 'required'
+        ]);
+
+        // Get the user with the specified email
+        $user = User::where('email', $request->email)->first();
+
+        // If the user doesn't exist or the reset token is invalid, return an error response
+        if (!$user || !Password::tokenExists($user, $request->token)) {
+            return response()->json([
+                'message' => 'The password reset token is invalid or has expired.'
+            ], 422);
+        }
+
+        // Reset the user's password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Send the user an email to confirm the password reset
+       // Mail::to($user)->send(new PasswordResetConfirmation($user));
+
+        return response()->json([
+            'message' => 'Your password has been reset successfully.'
+        ]);
+    }
 
 }

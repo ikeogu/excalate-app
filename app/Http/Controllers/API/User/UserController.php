@@ -103,7 +103,8 @@ class UserController extends Controller
         });
     }
 
-    public function update(HttpRequest $request, User $user): JsonResponse
+    public function update(
+        HttpRequest $request, User $user): JsonResponse
     {
         return FacadesDB::transaction(function () use ($request, $user) {
 
@@ -128,7 +129,8 @@ class UserController extends Controller
     }
 
 
-    public function updatePassword(PasswordUpdateRequest $request): JsonResponse
+    public function updatePassword(
+        PasswordUpdateRequest $request): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();

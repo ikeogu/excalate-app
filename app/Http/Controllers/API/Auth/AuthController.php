@@ -26,6 +26,7 @@ use Laravel\Passport\RefreshTokenRepository;
 use Laravel\Passport\Token;
 use Laravel\Passport\TokenRepository;
 
+
 class AuthController extends  Controller
 {
 
@@ -76,6 +77,7 @@ class AuthController extends  Controller
         if(!empty($request->validated()['data']['relationships'])){
             $businessInput = $request->validated()['data']['relationships']
                 ['business_profile']['data'];
+
             $businessInput['user_id'] = $user->id;
             $businessInput['business_category_id'] =
                 $request->validated()['data']['relationships']
@@ -141,13 +143,15 @@ class AuthController extends  Controller
         );
     }
 
-    public function verifyOtp(VerifyOtpRequest $request): JsonResponse
+    public function verifyOtp(
+        VerifyOtpRequest $request): JsonResponse
     {
         /** @var User */
         $loggedUser = auth()->user();
 
         /** @var EmailVerification */
-        $isValidOtp = EmailVerification::firstWhere(['email' =>
+        $isValidOtp = EmailVerification::
+            firstWhere(['email' =>
             $loggedUser->email, 'otp' => $request->otp]);
 
         if (now()->greaterThan($isValidOtp->expired_at)) {
@@ -180,7 +184,8 @@ class AuthController extends  Controller
         );
     }
 
-    public function confirmEmail(ConfirmEmailRequest $request): JsonResponse
+    public function confirmEmail(
+        ConfirmEmailRequest $request): JsonResponse
     {
         /** @var User */
         $user = auth()->user();
@@ -188,7 +193,8 @@ class AuthController extends  Controller
         return $this->success(message: 'A token has be sent to your mail');
     }
 
-    public function verifyForgetonPasswordOtp(VerifyOtpRequest $request): JsonResponse
+    public function verifyForgetonPasswordOtp(
+        VerifyOtpRequest $request): JsonResponse
     {
         /** @var User */
         $loggedUser = auth()->user();
@@ -227,24 +233,36 @@ class AuthController extends  Controller
         );
     }
 
-
     public function logout(): JsonResponse
     {
-        //laravel passport logout method
-         /** @phpstan-ignore-next-line */
-        auth()->user()->token()->revoke();
-        return $this->success(
-            message: 'Logout successful'
-        );
+        try {
+            //code...
+            /** @phpstan-ignore-next-line */
+            Auth::guard('api')->user()->token()->revoke();
+
+            return $this->success(
+                message: 'Logout successful'
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->failure(
+                message: $th->getMessage(),
+                status: HttpStatusCode::NOT_FOUND->value
+            );
+        }
+
     }
 
     // get access token sanctum
 
-    public function getAccessToken(Request $request) : JsonResponse
+    public function getAccessToken(
+        Request $request) : JsonResponse
     {
-        $user = User::where('email', $request->data['email'])->first();
+        $user = User::where('email',
+            $request->data['email'])->first();
 
-        if (!$user || !Hash::check($request->data['password'], $user->password)) {
+        if (!$user || !Hash::check(
+                $request->data['password'], $user->password)) {
             return $this->success(
                 message: 'The provided credentials are incorrect.',
                 status: HttpStatusCode::FORBIDDEN->value
@@ -268,7 +286,8 @@ class AuthController extends  Controller
     }
 
 
-    public function resetPassword(Request $request) : JsonResponse
+    public function resetPassword(
+        Request $request) : JsonResponse
     {
         // Validate the request data
         $request->validate([

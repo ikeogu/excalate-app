@@ -69,6 +69,7 @@ class BusinessProfileController extends Controller
 
             $businessProfile->user()->associate($user);
             $businessProfile->business_category()->associate($category);
+            $businessProfile->save();
 
 
             return $this->success(

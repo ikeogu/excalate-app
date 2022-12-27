@@ -48,11 +48,13 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
             // tokens
                 Route::post('/refresh', [AuthController::class, 'refresh'])->
                     name('refresh');
-                Route::delete('logout', [AuthController::class, 'logout']);
+               
             });
             // get access token
             Route::post('/access_token', [AuthController::class, 'getAccessToken'])->
                 name('token');
+            Route::delete('/access_token', [AuthController::class, 'logout'])->
+                name('delete-token');
         // Authentication Routes
 
         });

@@ -33,7 +33,9 @@ class BusinessProfileRequest extends FormRequest
             'data.attributes.qualifications' => 'required|string',
             'data.attributes.min_charge' => 'required|numeric',
             'data.attributes.service_type' => 'required|string',
-            'data.relationships.business.business_category_id' => 'required|numeric',
+            'data.relationships.business_category.category_id' => [
+                'required',
+                'exists:business_categories,id'],
 
         ];
     }

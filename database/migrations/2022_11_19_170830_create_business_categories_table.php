@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('business_categories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->tinyText('description')->nullable();
             $table->integer('status')->default(1);

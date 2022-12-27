@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusCode;
 use App\Http\Requests\ContactRequest;
+use App\Http\Resources\EmergencyContact;
 use App\Models\Contact;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,8 +23,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contacts',
             data: [
-                'type' => 'emergency_contacts',
-                'attributes' => $contacts,
+                EmergencyContact::collection($contacts)
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -42,11 +42,9 @@ class ContactController extends Controller
         $contact->save();
 
         return $this->success(
-            message: 'New Contact',
+            message: 'New Contact Added',
             data: [
-                'type' => 'emergency_contacts',
-                'attributes' => $contact,
-
+                new EmergencyContact($contact)
             ],
             status: HttpStatusCode::CREATED->value
         );
@@ -65,16 +63,15 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact',
             data: [
-                'type' => 'emergency_contacts',
-                'attributes' => $contact,
-
+                new EmergencyContact($contact)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
 
-    public function update(ContactRequest $request, Contact $contact) : JsonResponse
+    public function update(
+        ContactRequest $request, Contact $contact) : JsonResponse
     {
         //
         $user = auth()->user();
@@ -87,14 +84,11 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact Updated',
             data: [
-                'type' => 'emergency_contacts',
-                'attributes' => $contact,
-
+                new EmergencyContact($contact)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
-
 
     public function destroy(Contact $contact) : JsonResponse
     {
@@ -107,9 +101,7 @@ class ContactController extends Controller
         return $this->success(
             message: 'Contact Deleted',
             data: [
-                'type' => 'emergency_contacts',
-                'attributes' => $contact,
-
+                new EmergencyContact($contact)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

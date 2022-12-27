@@ -16,18 +16,17 @@ class ProximityPlanResource extends JsonResource
     public function toArray($request)
     {
         return [
+
+            'type' => 'proximity_plan',
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'duration' => $this->duration,
-            'status' => $this->status,
-            'min_distance' => $this->min_distance,
-            'max_distance' => $this->max_distance,
-            'min_price' => $this->min_price,
-            'max_price' => $this->max_price,
-            'duration_type' => $this->duration_type,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'attributes' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description,
+                'price' => $this->price ?? 0,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+            ],
 
         ];
 

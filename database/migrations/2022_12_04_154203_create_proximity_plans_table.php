@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('proximity_plans', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('duration_type')->nullable();

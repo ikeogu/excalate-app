@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusCode;
+use App\Http\Resources\BusinessCategoryResource;
 use App\Models\BusinessCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,8 +36,8 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'All Business Categories',
             data: [
-                'type' => 'business_category',
-                'attribute' => [$busCat],
+
+                BusinessCategoryResource::collection($busCat)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
 
@@ -56,8 +57,7 @@ class BusinessCategoryController extends Controller
             return $this->success(
                 message: 'New Business Categories',
                 data: [
-                    'type' => 'business_category',
-                    'attribute' => [$busCat],
+                    new BusinessCategoryResource($busCat)
                 ],
                 status: HttpStatusCode::CREATED->value
             );
@@ -66,7 +66,7 @@ class BusinessCategoryController extends Controller
             return $this->success(
                 message: 'Business Category already exist',
                 data: [
-
+                    new BusinessCategoryResource($check)
                 ],
                 status: HttpStatusCode::FORBIDDEN->value
             );
@@ -88,8 +88,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Updated',
             data: [
-                'type' => 'business_category',
-                'attribute' => [$busCat]
+                new BusinessCategoryResource($busCat)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -102,8 +101,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Deleted',
             data: [
-                'type' => 'business_category',
-                'attributes' => [$busCat]
+                new BusinessCategoryResource($busCat)
 
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -116,8 +114,7 @@ class BusinessCategoryController extends Controller
         return $this->success(
             message: 'Business Category Deleted',
             data: [
-                'type' => 'business_category',
-
+                
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

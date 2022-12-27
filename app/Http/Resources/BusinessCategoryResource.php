@@ -16,10 +16,13 @@ class BusinessCategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'business category',
+            'type' => 'business_category',
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description
+            'attributes' =>[
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description
+            ]
 
         ];
     }

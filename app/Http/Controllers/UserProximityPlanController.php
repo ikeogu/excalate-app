@@ -47,14 +47,14 @@ class UserProximityPlanController extends Controller
         return $this->success(
             message: 'User Proximity Plans',
             data: [
-                'type' => 'user proximity plan',
-                'attributes' => $userProximityPlan,
+                UserProximityPlanResource::collection($userProximityPlan)
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
-    public function store(UserProximityPlanRequest $request) : JsonResponse
+    public function store(
+        UserProximityPlanRequest $request) : JsonResponse
     {
         //
         $input = $request->validated()['data']['attributes'];
@@ -73,8 +73,7 @@ class UserProximityPlanController extends Controller
         return $this->success(
             message: 'User Proximity Plan',
             data: [
-                'type' => 'user_proximity_plan',
-                'attributes' => new UserProximityPlanResource($userProximityPlan),
+               new UserProximityPlanResource($userProximityPlan),
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -90,15 +89,15 @@ class UserProximityPlanController extends Controller
         return $this->success(
             message: 'User Proximity Plan',
             data: [
-                'type' => 'user_proximity_plan',
-                'attributes' => new UserProximityPlanResource($userProximityPlan),
+                new UserProximityPlanResource($userProximityPlan),
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
 
-    public function update(UserProximityPlanRequest $request,int $id) : JsonResponse
+    public function update(
+        UserProximityPlanRequest $request,int $id) : JsonResponse
     {
         //
         $input = $request->validated()['data']['attributes'];
@@ -130,8 +129,7 @@ class UserProximityPlanController extends Controller
         return $this->success(
             message: 'User Proximity Plan',
             data: [
-                'type' => 'user_proximity_plan',
-                'attributes' => new UserProximityPlanResource($userProximityPlan),
+               new UserProximityPlanResource($userProximityPlan),
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

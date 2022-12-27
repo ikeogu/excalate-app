@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin \App\Models\BusinessProfile */
@@ -15,18 +16,39 @@ class BusinessProfileResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var User $user */
+        $user = User::findOrFail($this->user_id);
         return [
-            'type' => 'business profile',
-            'id' => $this->id,
-            'name' => $this->name,
-            'location' => $this->location,
-            'lat' => $this->lat,
-            'long' => $this->long,
-            'qualifications' => $this->qualifications,
-            'min_charge' => $this->min_charge,
-            'service_type' => $this->service_type,
-            'user' => new UserResource($this->user),
-            'busness_category' => new BusinessCategoryResource($this->business_category),
+            'attributes'=>[
+                'id' => $this->id,
+                'name' => $this->name,
+                'location' => $this->location,
+                'lat' => $this->lat,
+                'long' => $this->long,
+                'qualifications' => $this->qualifications,
+                'min_charge' => $this->min_charge,
+                'service_type' => $this->service_type,
+            ],
+
+            'relationships' => [
+                'users' =>[
+
+                    'data' =>[
+                        'type' => 'user',
+                        'id' => strval($user->id),
+                    ]
+                ],
+                'business_category' => [
+                    'data' => [
+                        'type' => 'business_category',
+                        'id' => strval($this->business_category_id),
+                    ]
+                ],
+
+            ],
+            'links' => [
+                'self' => route('business-profiles.show', ['business_profile' => $this->id]),
+            ],
 
         ];
     }

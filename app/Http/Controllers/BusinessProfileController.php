@@ -60,7 +60,8 @@ class BusinessProfileController extends Controller
         try {
             //code...
             $input = $request->validated()['data']['attributes'];
-            $input['business_category_id'] = $request->validated()['data']['relationships']['business'] ['business_category_id'];
+            $input['business_category_id'] = $request->validated()
+                ['data']['relationships']['business_category']['category_id'];
 
             $businessProfile = BusinessProfile::create($input);
 
@@ -75,7 +76,7 @@ class BusinessProfileController extends Controller
                 message: 'New Business Profile',
                 data: [
                     'type' => 'busness_profile',
-                    'attributes' => [new BusinessProfileResource($businessProfile)],
+                    new BusinessProfileResource($businessProfile),
 
                 ],
                 status: HttpStatusCode::CREATED->value

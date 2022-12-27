@@ -46,10 +46,7 @@ class BusinessProfileResource extends JsonResource
                 ],
 
             ],
-            'links' => [
-                'self' => route('business-profiles.show', ['business_profile' => $this->id]),
-            ],
-
+          
         ];
     }
 }

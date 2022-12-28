@@ -15,17 +15,18 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             'type' => 'user',
             'id' => strval($this->id),
             'attributes' => [
-                
+
                 'user' => [
                     'id' => strval($this->id),
                     'name' => $this->full_name ?? '',
                     'email' => $this->email,
                     'email_verified_at' => $this->email_verified_at,
-                    'phone' => $this->phone_number ?? '',
+                    'phone_number' => $this->phone_number ?? '',
                     'role' => $this->role,
                     'created_at' => $this->created_at,
                     'updated_at' => $this->updated_at,
@@ -35,13 +36,13 @@ class UserResource extends JsonResource
                 'business_profile' => [
                     'data' => [
                         'type' => 'business_profile',
-                        'id' => $this->business_profile_id ?? '',
+                        'id' => strval($this->business_profile_id) ?? '',
                     ]
                 ],
                 'user_proximity_plan' => [
                     'data' => [
                         'type' => 'user_proximity_plan',
-                        'id' => $this->user_proximity_plan_id ?? '',
+                        'id' => strval($this->user_proximity_plan_id) ?? '',
                     ]
                 ],
 

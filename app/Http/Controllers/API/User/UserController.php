@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Request;
 use DB;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -30,49 +31,49 @@ class UserController extends Controller
         $page = $request->query('page');
         $size = $page['size'] ?? 25;
 
-        $users = QueryBuilder::for(User::class)->
-            allowedFilters([
-                AllowedFilter::exact('id'),
-                AllowedFilter::exact('email'),
-                AllowedFilter::exact('first_name'),
-                AllowedFilter::exact('last_name'),
-                AllowedFilter::exact('phone'),
-                AllowedFilter::exact('role'),
-                AllowedFilter::exact('status'),
-                AllowedFilter::exact('created_at'),
-                AllowedFilter::exact('updated_at'),
-            ])->
-            allowedSorts(
-                'id',
-                'email',
-                'first_name',
-                'last_name',
-                'phone',
-                'role',
-                'status',
-                'created_at',
-                'updated_at',
-            )->
-            allowedFields(
-                'id',
-                'email',
-                'first_name',
-                'last_name',
-                'phone',
-                'role',
-                'status',
-                'created_at',
-                'updated_at',
-            )->
-            allowedIncludes('role')->
+        //get all users, allow filtering,sort and includes by name, email, phone number, role
 
-            paginate($size);
+        $users = QueryBuilder::for(User::class)
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::partial('first_name'),
+                AllowedFilter::partial('last_name'),
+                AllowedFilter::partial('email'),
+                AllowedFilter::partial('phone_number'),
+                AllowedFilter::exact('role'),
+            ])
+            ->allowedSorts([
+                'id',
+                'first_name',
+                'last_name',
+                'email',
+                'phone_number',
+                'role',
+            ])->allowedFields([
+                'id',
+                'first_name',
+                'last_name',
+                'email',
+                'phone_number',
+                'role',
+            ])
+            ->allowedIncludes([
+                'business_profile',
+                'user_proximity_plan',
+                'user_proximity_plan.proximity_plan',
+
+            ])
+            ->paginate($size)->appends(Request::all());
 
         return $this->success(
             message: 'Users listed successfully',
             data: [
                 'type' => 'users',
-                'attributes' => UserResource::collection($users),
+                // convert each user id to string to avoid integer overflow
+                'attributes' => $users->map(function ($user) {
+                    $user->toArray()['id'] = strval($user->id);
+                    return $user;
+                }),
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -122,7 +123,8 @@ class UserController extends Controller
                 data: [
                     'type' => 'user',
                     'id' => $user->id,
-                    'attributes' => new UserResource($user)],
+                    'attributes' => new UserResource($user)
+                ],
                 status: HttpStatusCode::SUCCESSFUL->value
             );
         });
@@ -169,19 +171,18 @@ class UserController extends Controller
 
    //get user by id
 
-   public function getUserById(int $id): JsonResponse
+   public function getUserById(Request $request,int $id): JsonResponse
    {
 
        try {
             //code...
+
             /** @var User */
             $user = User::findOrFail($id);
             return $this->success(
                 message: "User listed successfully",
                 data: [
-                    'type' => 'user',
-                    'id' => $user->id,
-                    'attributes' => new UserResource($user)
+                   new UserResource($user)
                 ],
                 status: HttpStatusCode::SUCCESSFUL->value
             );
@@ -193,4 +194,5 @@ class UserController extends Controller
             );
        }
    }
+
 }

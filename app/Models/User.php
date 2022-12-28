@@ -25,6 +25,7 @@ class User extends Authenticatable implements HasMedia
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'first_name',
         'email',
         'password',
@@ -41,6 +42,10 @@ class User extends Authenticatable implements HasMedia
         'status',
         'email_verified_at'
     ];
+
+     protected $guarded = [
+        'id',
+     ];
 
     protected $with = ['business_profile', 'contacts'];
     /**

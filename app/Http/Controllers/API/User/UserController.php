@@ -67,9 +67,7 @@ class UserController extends Controller
             ->paginate($size)->appends(Request::all());
 
             //convert    each user  id to string
-        $users->each(function ($user) {
-            $user->id = (string) $user->id;
-        });
+      
 
         return $this->success(
             message: 'Users listed successfully',

@@ -36,13 +36,13 @@ class UserResource extends JsonResource
                 'business_profile' => [
                     'data' => [
                         'type' => 'business_profile',
-                        'id' => strval($this->business_profile_id) ?? '',
+                         'id' => $this->business_profile->pluck('id')->toArray(),
                     ]
                 ],
                 'user_proximity_plan' => [
                     'data' => [
                         'type' => 'user_proximity_plan',
-                        'id' => strval($this->user_proximity_plan_id) ?? '',
+                        'id' => $this->user_proximity_plans->pluck('id')->toArray(),
                     ]
                 ],
 

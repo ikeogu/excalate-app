@@ -34,6 +34,7 @@ class UserController extends Controller
         //get all users, allow filtering,sort and includes by name, email, phone number, role
 
         $users = QueryBuilder::for(User::class)
+
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::partial('first_name'),
@@ -65,15 +66,16 @@ class UserController extends Controller
             ])
             ->paginate($size)->appends(Request::all());
 
+            //convert    each user  id to string
+        $users->each(function ($user) {
+            $user->id = (string) $user->id;
+        });
+
         return $this->success(
             message: 'Users listed successfully',
             data: [
                 'type' => 'users',
-                // convert each user id to string to avoid integer overflow
-                'attributes' => $users->map(function ($user) {
-                    $user->toArray()['id'] = strval($user->id);
-                    return $user;
-                }),
+                'attributes' => $users
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

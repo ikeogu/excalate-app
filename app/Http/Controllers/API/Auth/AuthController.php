@@ -96,15 +96,18 @@ class AuthController extends  Controller
         return $this->success(
             message: 'Registration successful',
             data: [
-                (new UserResource($user))->with(
-                    [
-                        'attributes' => [
-                            'access_token' => $accessToken
-                        ]
+                'type' => 'user',
+                'id' => strval($user->id),
+                'attributes' => [
+                    'access_token' => $accessToken,
+                    'user' => [
+                        array_merge(
+                            ['id' => strval($user->id)],
+                            Arr::except($user->toArray(), ['id'])
+                        )
                     ]
-                )
+                ],
             ],
-
             status: HttpStatusCode::SUCCESSFUL->value
         );
 
@@ -134,12 +137,17 @@ class AuthController extends  Controller
         return $this->success(
             message: 'Login suceessful',
             data: [
-                (new UserResource($user))->with(
-                    [
-                        'attributes' => [
-                            'access_token' => $accessToken
-                        ]
-                    ])
+                'type' => 'user',
+                'id' => strval($user->id),
+                'attributes' => [
+                    'access_token' => $accessToken,
+                    'user' => [
+                        array_merge(
+                            ['id' => strval($user->id)],
+                            Arr::except($user->toArray(), ['id'])
+                        )
+                    ]
+                ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -276,7 +284,16 @@ class AuthController extends  Controller
         return $this->success(
             message: 'Access token generated',
             data: [
-                new UserResource($user),
+                'type' => 'user',
+                'id' => strval($user->id),
+                'attributes' => [
+                    'access_token' => $token,
+                    'user' => [
+                        array_merge(['id' => strval($user->id)],
+                            Arr::except($user->toArray(), ['id'])
+                        )
+                    ]
+                ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
         );

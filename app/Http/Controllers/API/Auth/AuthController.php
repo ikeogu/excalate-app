@@ -194,8 +194,8 @@ class AuthController extends  Controller
     {
         try {
             //code...
-            /** @var User */
-
+            /** @var User $user*/
+            /* @phpstan-ignore-next-line */
             $user = User::findOrFail(auth()->user()->id);
             VerificationService::generateAndSendOtp($user);
 

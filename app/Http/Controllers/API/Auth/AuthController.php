@@ -204,7 +204,8 @@ class AuthController extends  Controller
             $user = User::where('email', $email)->
                 orWhere('phone_number', $phone_number)->first();
 
-            if($loggedUser->id != $user->id){
+            if($loggedUser->email != $user->email ||
+                $loggedUser->phone_number != $user->phone_number){
                 return $this->failure(
                     message: 'Invalid user',
                     status: HttpStatusCode::UNAUTHENTICATED->value

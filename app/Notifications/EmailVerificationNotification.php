@@ -46,7 +46,7 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
             ->greeting("Hi {$notifiable->full_name}")
             ->line('Please use the OTP below to verify your email address. Expires in next 10 minutes.')
             ->line("OTP: $this->otp")
-            ->line('Thanks, Excalate');
+            ->line('Thanks, Escalate');
     }
 
 

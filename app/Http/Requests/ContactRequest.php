@@ -26,7 +26,7 @@ class ContactRequest extends FormRequest
         return [
             //
             'data.attributes.name' => 'required|string|min:3|max:255',
-            'data.attributes.phone_number' => 'required|min:11|max:11|starts_with:0|',
+            'data.attributes.phone_number' => 'required|string|min:3|max:255',
             'data.attributes.relationship' => 'required|in:spouse,child,parent,friend,other,sibling,work',
             'data.attributes.type' => 'required|in:emergency,medical,other,mandatory|string',
 

@@ -162,7 +162,7 @@ class AuthController extends  Controller
 
             /** @var EmailVerification */
             $isValidOtp = EmailVerification::firstWhere(['email' =>
-                $loggedUser->email, 'otp' => $request->otp]);
+                $loggedUser->email, 'otp' => $request->data['attributes']['otp']]);
 
             if (now()->greaterThan($isValidOtp->expired_at)) {
                 return $this->failure(
@@ -190,13 +190,27 @@ class AuthController extends  Controller
        }
     }
 
-    public function resendOtp(): JsonResponse
+    public function resendOtp(Request $request): JsonResponse
     {
         try {
             //code...
+            /** @var User $loggedUser*/
+            $loggedUser = auth()->user();
+
+            $phone_number= $request->data['attributes']['phone_number'];
+            $email = $request->data['attributes']['email'];
+
             /** @var User $user*/
-            /* @phpstan-ignore-next-line */
-            $user = User::findOrFail(auth()->user()->id);
+            $user = User::where('email', $email)->
+                orWhere('phone_number', $phone_number)->first();
+
+            if($loggedUser->id != $user->id){
+                return $this->failure(
+                    message: 'Invalid user',
+                    status: HttpStatusCode::UNAUTHENTICATED->value
+                );
+            }
+
             VerificationService::generateAndSendOtp($user);
 
             return $this->success(
@@ -207,8 +221,8 @@ class AuthController extends  Controller
         } catch (\Throwable $th) {
             //throw $th;
             return $this->failure(
-                message: 'User not logged in',
-                status: HttpStatusCode::UNAUTHENTICATED->value
+                message: 'User not found',
+                status: HttpStatusCode::NOT_FOUND->value
             );
         }
     }

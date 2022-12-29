@@ -41,10 +41,7 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                 name('register_admin');
             Route::post('/register_super_admin', [AuthController::class, 'registerSuperAdmin'])->
                 name('register_super_admin');
-            Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->
-                name('verify_otp');
-            Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->
-                name('resend_otp');
+
 
             Route::group(['middleware' => ['auth:api']], function () {
             // tokens
@@ -75,7 +72,10 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
 
         Route::group(['middleware' => ['auth:api']],
              static function () {
-
+                Route::post('auth/otp/verify', [AuthController::class, 'verifyOtp'])->
+                    name('verify_otp');
+                Route::post('auth/otp/resend', [AuthController::class, 'resendOtp'])->
+                    name('resend_otp');
             Route::prefix('users')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->
                     name('user.index');

@@ -104,7 +104,8 @@ class BusinessCategoryController extends Controller
 
     public function destroy(mixed $id) :JsonResponse
     {
-        $busCat = BusinessCategory::findOrFail($id)->delete();
+        $busCat = BusinessCategory::findOrFail($id);
+        $busCat->delete();
         return $this->success(
             message: 'Business Category Deleted',
             data: null,

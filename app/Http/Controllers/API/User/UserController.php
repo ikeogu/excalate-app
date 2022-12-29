@@ -66,8 +66,7 @@ class UserController extends Controller
             ])
             ->paginate($size)->appends(Request::all());
 
-            //convert    each user  id to string
-      
+            //convert    each user  id to s
 
         return $this->success(
             message: 'Users listed successfully',
@@ -138,7 +137,7 @@ class UserController extends Controller
         $user = $request->user();
 
         if (!Hash::check($request->old_password, $user->password)) {
-            return $this->success(
+            return $this->failure(
                 message: 'Old password is incorrect',
                 status: HttpStatusCode::UNPROCESSABLE_ENTITY->value
             );
@@ -163,7 +162,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return $this->success(
+        return $this->failure(
             message: "User deleted successfully",
             status: HttpStatusCode::SUCCESSFUL->value
         );
@@ -181,9 +180,8 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             return $this->success(
                 message: "User listed successfully",
-                data: [
-                   new UserResource($user)
-                ],
+                /** @phpstan-ignore-next-line */
+                data:new UserResource($user),
                 status: HttpStatusCode::SUCCESSFUL->value
             );
        } catch (\Throwable $th) {

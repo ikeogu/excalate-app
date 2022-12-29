@@ -100,12 +100,11 @@ class AuthController extends  Controller
                 'id' => strval($user->id),
                 'attributes' => [
                     'access_token' => $accessToken,
-                    'user' => [
+                    'user' => (object)
                         array_merge(
                             ['id' => strval($user->id)],
                             Arr::except($user->toArray(), ['id'])
                         )
-                    ]
                 ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -125,7 +124,7 @@ class AuthController extends  Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return $this->success(
+            return $this->failure(
                 message: 'The provided credentials are incorrect.',
                 status: HttpStatusCode::FORBIDDEN->value
             );
@@ -176,7 +175,7 @@ class AuthController extends  Controller
 
             $isValidOtp->delete();
 
-            return $this->success(
+            return $this->failure(
                 message: 'OTP verified successfully'
             );
         });
@@ -190,7 +189,9 @@ class AuthController extends  Controller
         VerificationService::generateAndSendOtp($loggedUser);
 
         return $this->success(
-            message: 'OTP resent successfully'
+            message: 'OTP resent successfully',
+            data:null,
+            status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
@@ -200,7 +201,10 @@ class AuthController extends  Controller
         /** @var User */
         $user = auth()->user();
         VerificationService::generateAndSendOtp($user);
-        return $this->success(message: 'A token has be sent to your mail');
+        return $this->success(message: 'A token has be sent to your mail',
+            data: null,
+            status: HttpStatusCode::SUCCESSFUL->value
+        );
     }
 
     public function verifyForgetonPasswordOtp(
@@ -226,7 +230,9 @@ class AuthController extends  Controller
             $isValidOtp->delete();
 
             return $this->success(
-                message: 'OTP verified successfully'
+                message: 'OTP verified successfully',
+                data: null,
+                status: HttpStatusCode::SUCCESSFUL->value
             );
         });
     }
@@ -239,7 +245,9 @@ class AuthController extends  Controller
         VerificationService::generateAndSendOtp($loggedUser);
 
         return $this->success(
-            message: 'OTP resent successfully'
+            message: 'OTP resent successfully',
+            data: null,
+            status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
@@ -251,7 +259,9 @@ class AuthController extends  Controller
             Auth::guard('api')->user()->token()->revoke();
 
             return $this->success(
-                message: 'Logout successful'
+                message: 'Logout successful',
+                data: null,
+                status: HttpStatusCode::SUCCESSFUL->value
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -273,7 +283,7 @@ class AuthController extends  Controller
 
         if (!$user || !Hash::check(
                 $request->data['password'], $user->password)) {
-            return $this->success(
+            return $this->failure(
                 message: 'The provided credentials are incorrect.',
                 status: HttpStatusCode::FORBIDDEN->value
             );

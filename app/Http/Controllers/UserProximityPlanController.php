@@ -46,9 +46,8 @@ class UserProximityPlanController extends Controller
 
         return $this->success(
             message: 'User Proximity Plans',
-            data: [
-                UserProximityPlanResource::collection($userProximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: UserProximityPlanResource::collection($userProximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -72,14 +71,13 @@ class UserProximityPlanController extends Controller
 
         return $this->success(
             message: 'User Proximity Plan',
-            data: [
-               new UserProximityPlanResource($userProximityPlan),
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new UserProximityPlanResource($userProximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
-    public function show(int $id) : JsonResponse
+    public function show(mixed $id) : JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -88,16 +86,15 @@ class UserProximityPlanController extends Controller
 
         return $this->success(
             message: 'User Proximity Plan',
-            data: [
-                new UserProximityPlanResource($userProximityPlan),
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new UserProximityPlanResource($userProximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
 
     public function update(
-        UserProximityPlanRequest $request,int $id) : JsonResponse
+        UserProximityPlanRequest $request,mixed $id) : JsonResponse
     {
         //
         $input = $request->validated()['data']['attributes'];
@@ -109,15 +106,14 @@ class UserProximityPlanController extends Controller
 
         return $this->success(
             message: 'User Proximity Plan',
-            data: [
-                'type' => 'user_proximity_plan',
-                'attributes' => new UserProximityPlanResource($userProximityPlan),
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new UserProximityPlanResource($userProximityPlan),
+
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
-    public function destroy(int $id) : JsonResponse
+    public function destroy(mixed $id) : JsonResponse
     {
         //
         /** @var User $user */
@@ -128,9 +124,8 @@ class UserProximityPlanController extends Controller
 
         return $this->success(
             message: 'User Proximity Plan',
-            data: [
-               new UserProximityPlanResource($userProximityPlan),
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new UserProximityPlanResource($userProximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }

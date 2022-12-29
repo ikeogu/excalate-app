@@ -43,10 +43,8 @@ class BusinessProfileController extends Controller
 
         return $this->success(
             message: 'Business Profiles',
-            data: [
-
-                BusinessProfileResource::collection($businessProfiles)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: BusinessProfileResource::collection($businessProfiles),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -77,11 +75,8 @@ class BusinessProfileController extends Controller
 
             return $this->success(
                 message: 'New Business Profile',
-                data: [
-
-                    new BusinessProfileResource($businessProfile),
-
-                ],
+                 /** @phpstan-ignore-next-line */
+                data: new BusinessProfileResource($businessProfile),
                 status: HttpStatusCode::CREATED->value
             );
         } catch (\Throwable $th) {
@@ -104,10 +99,8 @@ class BusinessProfileController extends Controller
             //code...
             return $this->success(
                 message: 'Business Profile',
-                data: [
-                    new BusinessProfileResource($businessProfile),
-
-                ],
+                 /** @phpstan-ignore-next-line */
+                data:new BusinessProfileResource($businessProfile),
                 status: HttpStatusCode::SUCCESSFUL->value
             );
         } catch (\Throwable $th) {
@@ -139,10 +132,8 @@ class BusinessProfileController extends Controller
 
         return $this->success(
             message: 'Business Profile Updated',
-            data: [
-              new BusinessProfileResource($businessProfile)
-
-            ],
+             /** @phpstan-ignore-next-line */
+            data: new BusinessProfileResource($businessProfile),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -159,10 +150,8 @@ class BusinessProfileController extends Controller
 
             return $this->success(
                 message: 'Business Profile Deleted',
-                data: [
-                  new BusinessProfileResource($businessProfile)
-
-                ],
+                 /** @phpstan-ignore-next-line */
+                data:new BusinessProfileResource($businessProfile),
                 status: HttpStatusCode::SUCCESSFUL->value
             );
         } catch (\Throwable $th) {
@@ -204,9 +193,9 @@ class BusinessProfileController extends Controller
 
         return $this->success(
             message: 'Business Profiles',
-            data: [
-                BusinessProfileResource::collection($businessProfile)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:BusinessProfileResource::collection($businessProfile)
+            ,
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }

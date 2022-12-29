@@ -22,10 +22,8 @@ class ContactController extends Controller
         $contacts = $user->contacts->get();
         return $this->success(
             message: 'Contacts',
-            data: [
-                EmergencyContact::collection($contacts)
-
-            ],
+             /** @phpstan-ignore-next-line */
+            data: EmergencyContact::collection($contacts),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -43,9 +41,8 @@ class ContactController extends Controller
 
         return $this->success(
             message: 'New Contact Added',
-            data: [
-                new EmergencyContact($contact)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: new EmergencyContact($contact),
             status: HttpStatusCode::CREATED->value
         );
 
@@ -62,9 +59,8 @@ class ContactController extends Controller
 
         return $this->success(
             message: 'Contact',
-            data: [
-                new EmergencyContact($contact)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:  new EmergencyContact($contact),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -83,9 +79,8 @@ class ContactController extends Controller
 
         return $this->success(
             message: 'Contact Updated',
-            data: [
-                new EmergencyContact($contact)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: new EmergencyContact($contact),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -100,9 +95,8 @@ class ContactController extends Controller
 
         return $this->success(
             message: 'Contact Deleted',
-            data: [
-                new EmergencyContact($contact)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: new EmergencyContact($contact),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }

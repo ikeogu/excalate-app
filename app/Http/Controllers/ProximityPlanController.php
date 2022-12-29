@@ -45,9 +45,8 @@ class ProximityPlanController extends Controller
 
         return $this->success(
             message: 'Proximity Plans',
-            data: [
-                ProximityPlanResource::collection($proximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:ProximityPlanResource::collection($proximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -62,9 +61,8 @@ class ProximityPlanController extends Controller
 
         return $this->success(
             message: 'Proximity plan updated successfully',
-            data: [
-               new ProximityPlanResource($proximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new ProximityPlanResource($proximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -75,9 +73,8 @@ class ProximityPlanController extends Controller
     {
         return $this->success(
             message: 'Proximity plan',
-            data: [
-                new ProximityPlanResource($proximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new ProximityPlanResource($proximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -93,9 +90,8 @@ class ProximityPlanController extends Controller
 
         return $this->success(
             message: 'Proximity plan updated successfully',
-            data : [
-                new ProximityPlanResource($proximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data :new ProximityPlanResource($proximityPlan),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
@@ -108,9 +104,8 @@ class ProximityPlanController extends Controller
 
         return $this->success(
             message: 'Proximity plan updated successfully',
-            data: [
-                new ProximityPlanResource($proximityPlan)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new ProximityPlanResource($proximityPlan),
             status :HttpStatusCode::SUCCESSFUL->value
         );
     }

@@ -12,9 +12,7 @@ class Contact extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
+        'name',
         'phone_number',
         'relationship',
         'type',

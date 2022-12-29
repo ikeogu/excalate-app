@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\HttpStatusCode;
 use App\Http\Resources\BusinessCategoryResource;
 use App\Models\BusinessCategory;
+use Illuminate\Foundation\Mix;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -35,10 +36,8 @@ class BusinessCategoryController extends Controller
 
         return $this->success(
             message: 'All Business Categories',
-            data: [
-
-                BusinessCategoryResource::collection($busCat)
-            ],
+             /** @phpstan-ignore-next-line */
+            data: BusinessCategoryResource::collection($busCat),
             status: HttpStatusCode::SUCCESSFUL->value
 
         );
@@ -56,18 +55,16 @@ class BusinessCategoryController extends Controller
 
             return $this->success(
                 message: 'New Business Categories',
-                data: [
-                    new BusinessCategoryResource($busCat)
-                ],
+                 /** @phpstan-ignore-next-line */
+                data: new BusinessCategoryResource($busCat),
                 status: HttpStatusCode::CREATED->value
             );
 
         }else{
             return $this->success(
                 message: 'Business Category already exist',
-                data: [
-                    new BusinessCategoryResource($check)
-                ],
+                 /** @phpstan-ignore-next-line */
+                data: new BusinessCategoryResource($check),
                 status: HttpStatusCode::FORBIDDEN->value
             );
         }
@@ -87,35 +84,30 @@ class BusinessCategoryController extends Controller
 
         return $this->success(
             message: 'Business Category Updated',
-            data: [
-                new BusinessCategoryResource($busCat)
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new BusinessCategoryResource($busCat),
             status: HttpStatusCode::SUCCESSFUL->value
         );
 
     }
 
-    public function show(int $id): JsonResponse
+    public function show(mixed $id): JsonResponse
     {
         $busCat = BusinessCategory::find($id);
         return $this->success(
             message: 'Business Category Deleted',
-            data: [
-                new BusinessCategoryResource($busCat)
-
-            ],
+             /** @phpstan-ignore-next-line */
+            data:new BusinessCategoryResource($busCat),
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
 
-    public function destroy(int $id) :JsonResponse
+    public function destroy(mixed $id) :JsonResponse
     {
         $busCat = BusinessCategory::findOrFail($id)->delete();
         return $this->success(
             message: 'Business Category Deleted',
-            data: [
-                
-            ],
+            data: null,
             status: HttpStatusCode::SUCCESSFUL->value
         );
 

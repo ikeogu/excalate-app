@@ -5,14 +5,14 @@ namespace App\Traits;
 use App\Enums\HttpStatusCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Collection;
 
 trait RespondsWithHttpStatus
 {
     /**
      * @param array<mixed> $data
      */
-    protected function success(string $message, mixed $data = [], int $status = 200): JsonResponse
+    protected function success(string $message, mixed $data = null, int $status = 200): JsonResponse
     {
         return response()->json([
             'status' => 'success',

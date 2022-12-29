@@ -155,44 +155,62 @@ class AuthController extends  Controller
     public function verifyOtp(
         VerifyOtpRequest $request): JsonResponse
     {
-        /** @var User */
-        $loggedUser = auth()->user();
+       try {
+            //code...
+            /** @var User */
+            $loggedUser = auth()->user();
 
-        /** @var EmailVerification */
-        $isValidOtp = EmailVerification::
-            firstWhere(['email' =>
-            $loggedUser->email, 'otp' => $request->otp]);
+            /** @var EmailVerification */
+            $isValidOtp = EmailVerification::firstWhere(['email' =>
+                $loggedUser->email, 'otp' => $request->otp]);
 
-        if (now()->greaterThan($isValidOtp->expired_at)) {
-            return $this->failure(
-                message: 'OTP expired',
-                status: HttpStatusCode::BAD_REQUEST->value
-            );
-        }
+            if (now()->greaterThan($isValidOtp->expired_at)) {
+                return $this->failure(
+                    message: 'OTP expired',
+                    status: HttpStatusCode::BAD_REQUEST->value
+                );
+            }
 
-        return DB::transaction(function () use ($loggedUser, $isValidOtp) {
-            $loggedUser->update(['email_verified_at' => now()]);
+            return DB::transaction(function () use ($loggedUser, $isValidOtp) {
+                $loggedUser->update(['email_verified_at' => now()]);
 
-            $isValidOtp->delete();
+                $isValidOtp->delete();
 
-            return $this->failure(
-                message: 'OTP verified successfully'
-            );
-        });
+                return $this->failure(
+                    message: 'OTP verified successfully'
+                );
+            });
+       } catch (\Throwable $th) {
+        //throw $th;
+
+        return $this->failure(
+            message: 'Invalid OTP',
+            status: HttpStatusCode::UNAUTHENTICATED->value
+        );
+       }
     }
 
     public function resendOtp(): JsonResponse
     {
-        /** @var User */
-        $loggedUser = auth()->user();
+        try {
+            //code...
+            /** @var User */
 
-        VerificationService::generateAndSendOtp($loggedUser);
+            $user = User::findOrFail(auth()->user()->id);
+            VerificationService::generateAndSendOtp($user);
 
-        return $this->success(
-            message: 'OTP resent successfully',
-            data:null,
-            status: HttpStatusCode::SUCCESSFUL->value
-        );
+            return $this->success(
+                message: 'OTP resent successfully',
+                data: null,
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->failure(
+                message: 'User not logged in',
+                status: HttpStatusCode::UNAUTHENTICATED->value
+            );
+        }
     }
 
     public function confirmEmail(

@@ -41,7 +41,7 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                 name('register_admin');
             Route::post('/register_super_admin', [AuthController::class, 'registerSuperAdmin'])->
                 name('register_super_admin');
-            Route::post('/otp/verify_otp', [AuthController::class, 'verifyOtp'])->
+            Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->
                 name('verify_otp');
             Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->
                 name('resend_otp');

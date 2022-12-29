@@ -105,6 +105,7 @@ class BusinessCategoryController extends Controller
     public function destroy(mixed $id) :JsonResponse
     {
         $busCat = BusinessCategory::findOrFail($id);
+        /* @phpstan-ignore-next-line */
         $busCat->delete();
         return $this->success(
             message: 'Business Category Deleted',

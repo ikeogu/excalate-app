@@ -77,12 +77,7 @@ class UserController extends Controller
             status: HttpStatusCode::SUCCESSFUL->value
         );
     }
-/*
-    public function getUserById(HttpRequest $request, $id): JsonResponse
-    {
 
-    }
- */
     public function store(Request $request): JsonResponse
     {
         return FacadesDB::transaction(function () use ($request) {

@@ -43,12 +43,14 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                 name('register_super_admin');
             Route::post('/otp/verify_otp', [AuthController::class, 'verifyOtp'])->
                 name('verify_otp');
+            Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->
+                name('resend_otp');
 
             Route::group(['middleware' => ['auth:api']], function () {
             // tokens
                 Route::post('/refresh', [AuthController::class, 'refresh'])->
                     name('refresh');
-               
+
             });
             // get access token
             Route::post('/access_token', [AuthController::class, 'getAccessToken'])->

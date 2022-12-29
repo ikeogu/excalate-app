@@ -99,12 +99,7 @@ class AuthController extends  Controller
                 'type' => 'user',
                 'id' => strval($user->id),
                 'attributes' => [
-                    'access_token' => $accessToken,
-                    'user' => (object)
-                        array_merge(
-                            ['id' => strval($user->id)],
-                            Arr::except($user->toArray(), ['id'])
-                        )
+                    'access_token' => $accessToken
                 ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value
@@ -139,13 +134,7 @@ class AuthController extends  Controller
                 'type' => 'user',
                 'id' => strval($user->id),
                 'attributes' => [
-                    'access_token' => $accessToken,
-                    'user' => (object)
-                        array_merge(
-                            ['id' => strval($user->id)],
-                            Arr::except($user->toArray(), ['id'])
-                        )
-
+                    'access_token' => $accessToken
                 ],
             ],
             status: HttpStatusCode::SUCCESSFUL->value

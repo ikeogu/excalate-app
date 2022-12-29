@@ -20,17 +20,14 @@ class UserResource extends JsonResource
             'type' => 'user',
             'id' => strval($this->id),
             'attributes' => [
-
-                'user' => [
-                    'id' => strval($this->id),
-                    'name' => $this->full_name ?? '',
-                    'email' => $this->email,
-                    'email_verified_at' => $this->email_verified_at,
-                    'phone_number' => $this->phone_number ?? '',
-                    'role' => $this->role,
-                    'created_at' => $this->created_at,
-                    'updated_at' => $this->updated_at,
-                ]
+                'id' => strval($this->id),
+                'name' => $this->full_name ?? '',
+                'email' => $this->email,
+                'email_verified_at' => $this->email_verified_at,
+                'phone_number' => $this->phone_number ?? '',
+                'role' => $this->role,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             'relationships' => [
                 'business_profile' => [

@@ -172,7 +172,9 @@ class UserController extends Controller
             //code...
 
             /** @var User */
+
             $user = User::findOrFail($id);
+
             return $this->success(
                 message: "User listed successfully",
                 /** @phpstan-ignore-next-line */

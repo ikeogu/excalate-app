@@ -61,49 +61,58 @@ class AuthController extends  Controller
         int $role) : JsonResponse
     {
 
-        $input = $request->validated()['data']['attributes'];
+      try {
+            //code...
+            $input = $request->validated()['data']['attributes'];
 
-        $input['password'] = bcrypt($input['password']);
-        $input['role'] = $role;
-        $user = User::create($input);
-        if($role == 3){
-            $user->assignRole('user');
-        }else if($role == 1){
-            $user->assignRole('super admin');
-        }else{
-            $user->assignRole('admin');
-        }
+            $input['password'] = bcrypt($input['password']);
+            $input['role'] = $role;
+            $user = User::create($input);
+            if ($role == 3) {
+                $user->assignRole('user');
+            } else if ($role == 1) {
+                $user->assignRole('super admin');
+            } else {
+                $user->assignRole('admin');
+            }
 
-        if(!empty($request->validated()['data']['relationships'])){
-            $businessInput = $request->validated()['data']['relationships']
-                ['business_profile']['data'];
+            if (!empty($request->validated()['data']['relationships'])) {
+                $businessInput = $request->validated()['data']
+                    ['relationships']['business_profile']['data'];
 
-            $businessInput['user_id'] = $user->id;
-            $businessInput['business_category_id'] =
-                $request->validated()['data']['relationships']
-                    ['business_profile']['data']['category_id'];
+                $businessInput['user_id'] = $user->id;
+                $businessInput['business_category_id'] =
+                    $request->validated()['data']['relationships']['business_profile']['data']['category_id'];
 
-            $user->business_profile()->create(Arr::except(
-                $businessInput,'category_id'));
+                $user->business_profile()->create(Arr::except(
+                    $businessInput,
+                    'category_id'
+                ));
+            }
 
-        }
-
-        $accessToken =$user->createToken("$user->first_name
+            $accessToken = $user->createToken("$user->first_name
             $user->last_name token")->accessToken;
 
-        VerificationService::generateAndSendOtp($user);
+            VerificationService::generateAndSendOtp($user);
 
-        return $this->success(
-            message: 'Registration successful',
-            data: [
-                'type' => 'user',
-                'id' => strval($user->id),
-                'attributes' => [
-                    'access_token' => $accessToken
+            return $this->success(
+                message: 'Registration successful',
+                data: [
+                    'type' => 'user',
+                    'id' => strval($user->id),
+                    'attributes' => [
+                        'access_token' => $accessToken
+                    ],
                 ],
-            ],
-            status: HttpStatusCode::SUCCESSFUL->value
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+      } catch (\Throwable $th) {
+        //throw $th;
+        return $this->failure(
+            message: $th->getMessage(),
+            status: HttpStatusCode::BAD_REQUEST->value
         );
+      }
 
     }
 

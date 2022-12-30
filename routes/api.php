@@ -26,7 +26,7 @@ use App\Http\Controllers\UserProximityPlanController;
 Route::group(['middleware' => ['cors', 'json.response']], static function () {
 
     Route::any('/', static fn () => response()->json([
-        'message' => 'Welcome to Excalate API',
+        'message' => 'Welcome to Escalate API',
         'apiVersion' => 'v3.0.0',
     ]));
 

@@ -38,7 +38,7 @@ class RegistrationRequest extends FormRequest
             'data.attributes.email' => ['required', 'string', 'email','unique:users,email'],
             'data.attributes.password' => ['required', 'string', 'min:8', 'confirmed',
                  Password::min(8)->mixedCase()->symbols()],
-            'data.attributes.phone_number' => ['required', 'string', 'max:255'],
+            'data.attributes.phone_number' => ['required', 'string', 'max:255', 'unique:users,phone_number'],
             'data.relationships.business_profile.data.name' => ['nullable', 'string', 'max:255'],
             'data.relationships.business_profile.data.category_id' => ['nullable', 'string', 'exists:business_categories,id'],
         ];

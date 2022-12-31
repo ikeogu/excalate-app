@@ -28,4 +28,19 @@ class UserProximityPlanRequest extends FormRequest
             'data.attributes.proximity_plan_id' => ['required', 'integer', 'exists:proximity_plans,id'],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+
+    public function messages()
+    {
+        return [
+            'data.attributes.proximity_plan_id.required' => 'Proximity plan is required',
+            'data.attributes.proximity_plan_id.integer' => 'Proximity plan must be an integer',
+            'data.attributes.proximity_plan_id.exists' => 'Proximity plan does not exist',
+        ];
+    }
 }

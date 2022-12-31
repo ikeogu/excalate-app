@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('email_verifications', function (Blueprint $table) {
-            //
-            $table->string('otp')->unique()->change();
+            $table->unique('otp')->change();
         });
     }
 
@@ -28,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('email_verifications', function (Blueprint $table) {
             //
-            $table->string('otp')->change();
+            $table->unique('otp')->change();
         });
     }
 };

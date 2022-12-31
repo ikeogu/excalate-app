@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\EmailVerification;
 use App\Models\User;
 use App\Notifications\EmailVerificationNotification;
+use App\Notifications\ForgotPassword;
 use Illuminate\Support\Facades\DB;
 
 class VerificationService
@@ -13,18 +14,26 @@ class VerificationService
     {
         $otp = rand(100000, 999999);
 
-        DB::transaction(function () use ($user, $otp) {
-            EmailVerification::updateOrCreate(
-                ['email' => $user->email],
-                ['email' => $user->email, 'otp' => $otp, 'expired_at' => now()->addMinutes(10)]
-            );
+        //check if otp already exist in the database
+        $check_otp = EmailVerification::where('otp', $otp)->first();
 
-            $user->notify(new EmailVerificationNotification($otp));
-            if($user->phone_number){
-                static::send_otp($user->phone_number, "Your OTP is $otp");
-            }
+        //if otp exist, generate new otp
+        if(empty($check_otp)){
+            DB::transaction(function () use ($user, $otp) {
+                EmailVerification::updateOrCreate(
+                    ['email' => $user->email],
+                    ['email' => $user->email, 'otp' => $otp, 'expired_at' => now()->addMinutes(10)]
+                );
 
-        });
+                $user->notify(new EmailVerificationNotification($otp));
+                if ($user->phone_number) {
+                    static::send_otp($user->phone_number, "Your OTP is $otp");
+                }
+            });
+        }else{
+            static::generateAndSendOtp($user);
+        }
+
     }
 
     //send sms otp
@@ -65,4 +74,29 @@ class VerificationService
         return $response;
     }
 
+    public static function generateAndSendOtpForgotPassword(User $user): void
+    {
+        $otp = rand(100000, 999999);
+
+       $check_otp = EmailVerification::where('otp', $otp)->first();
+
+        //if otp exist, generate new otp
+        if(empty($check_otp)){
+            DB::transaction(function () use ($user, $otp) {
+                EmailVerification::updateOrCreate(
+                    ['email' => $user->email],
+                    ['email' => $user->email,
+                    'otp' => $otp, 'expired_at' => now()->addMinutes(10)
+                    ]
+                );
+
+                $user->notify(new ForgotPassword($otp));
+                if ($user->phone_number) {
+                    static::send_otp($user->phone_number, "Your OTP is $otp");
+                }
+            });
+        }else{
+           static::generateAndSendOtpForgotPassword($user);
+        }
+    }
 }

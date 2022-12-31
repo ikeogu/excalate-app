@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EmailVerificationNotification extends Notification implements ShouldQueue
+class ForgotPassword extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -18,9 +18,9 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
      */
     public function __construct(public int $otp)
     {
+        //
         $this->afterCommit();
     }
-
 
     /**
      * Get the notification's delivery channels.
@@ -42,12 +42,23 @@ class EmailVerificationNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Please verify your email')
+            ->subject('Please verify you')
             ->greeting("Hi {$notifiable->full_name}")
-            ->line('Please use the OTP below to verify your email address. Expires in next 10 minutes.')
+            ->line('Please use the OTP below to create a new password. Expires in next 10 minutes.')
             ->line("OTP: $this->otp")
             ->line('Thanks, Escalate');
     }
 
-
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toArray($notifiable)
+    {
+        return [
+            //
+        ];
+    }
 }

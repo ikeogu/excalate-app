@@ -41,6 +41,13 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                 name('register_admin');
             Route::post('/register_super_admin', [AuthController::class, 'registerSuperAdmin'])->
                 name('register_super_admin');
+            //send reset password link
+            Route::post('/password', [AuthController::class, 'forgotPassword'])->
+                name('forgot_password');
+            // verify reset password link
+            Route::post('/password/verify-otp', [AuthController::class, 'verifyForgetonPasswordOtp'])->
+                name('verify_reset_password_link');
+
 
 
             Route::group(['middleware' => ['auth:api']], function () {
@@ -76,6 +83,10 @@ Route::group(['middleware' => ['cors', 'json.response']], static function () {
                     name('verify_otp');
                 Route::post('auth/otp/resend', [AuthController::class, 'resendOtp'])->
                     name('resend_otp');
+                // reset password
+                Route::patch('/auth/password', [AuthController::class, 'resetPassword'])->
+                    name('reset_password');
+
             Route::prefix('users')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->
                     name('user.index');

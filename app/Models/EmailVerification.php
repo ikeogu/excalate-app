@@ -24,5 +24,5 @@ class EmailVerification extends Model
         return $query->where('expired_at', '>', now());
     }
 
-
+   
 }

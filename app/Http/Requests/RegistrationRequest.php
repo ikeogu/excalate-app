@@ -37,7 +37,7 @@ class RegistrationRequest extends FormRequest
             'data.attributes.nin' => ['nullable', 'string', 'max:13'],
             'data.attributes.email' => ['required', 'string', 'email','unique:users,email'],
             'data.attributes.password' => ['required', 'string', 'min:8',
-                 Password::min(8)->mixedCase()->symbols()],
+                 Password::min(8)->mixedCase()->symbols()->numbers()->uncompromised()],
             'data.attributes.phone_number' => ['required', 'string', 'max:255', 'unique:users,phone_number'],
             'data.relationships.business_profile.data.name' => ['nullable', 'string', 'max:255'],
             'data.relationships.business_profile.data.category_id' => ['nullable', 'string', 'exists:business_categories,id'],
@@ -68,7 +68,7 @@ class RegistrationRequest extends FormRequest
             'data.attributes.email.email' => 'A valid email is required',
             'data.attributes.avatar.mimes' => 'Avatar must be a file of type: png, jpg, jpeg',
             'data.attributes.avatar.file' => 'Avatar must be a file of type: png, jpg, jpeg',
-            
+
         ];
     }
 }

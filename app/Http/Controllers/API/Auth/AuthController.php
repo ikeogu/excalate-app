@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Enums\HttpStatusCode;
 use App\Http\Requests\ConfirmEmailRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\PasswordResetRequest;
+use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\VerifyOtpRequest;
 use App\Http\Resources\UserResource;
@@ -213,8 +215,14 @@ class AuthController extends  Controller
             VerificationService::generateAndSendOtp($user);
 
             return $this->success(
-                message: 'OTP resent successfully',
-                data: null,
+                message: 'otp sent to phone number successfully',
+                data: [
+                    'type' => 'phone_email',
+                    'id' => strval($user->id),
+                    'attributes' => [
+                        'phone_number' => $user->phone_number
+                    ],
+                ],
                 status: HttpStatusCode::SUCCESSFUL->value
             );
         } catch (\Throwable $th) {
@@ -238,35 +246,7 @@ class AuthController extends  Controller
         );
     }
 
-    public function verifyForgetonPasswordOtp(
-        VerifyOtpRequest $request): JsonResponse
-    {
-        /** @var User */
-        $loggedUser = auth()->user();
 
-        /** @var EmailVerification */
-        $isValidOtp = EmailVerification::firstWhere(['email' =>
-             $loggedUser->email, 'otp' => $request->otp]);
-
-        if (now()->greaterThan($isValidOtp->expired_at)) {
-            return $this->failure(
-                message: 'OTP expired',
-                status: HttpStatusCode::BAD_REQUEST->value
-            );
-        }
-
-        return DB::transaction(function () use ($loggedUser, $isValidOtp) {
-            $loggedUser->update(['email_verified_at' => now()]);
-
-            $isValidOtp->delete();
-
-            return $this->success(
-                message: 'OTP verified successfully',
-                data: null,
-                status: HttpStatusCode::SUCCESSFUL->value
-            );
-        });
-    }
 
     public function resendForgetonPasswordOtp(): JsonResponse
     {
@@ -307,13 +287,13 @@ class AuthController extends  Controller
     // get access token sanctum
 
     public function getAccessToken(
-        Request $request) : JsonResponse
+        LoginRequest $request) : JsonResponse
     {
         $user = User::where('email',
-            $request->data['email'])->first();
+            $request->validated()['data']['email'])->first();
 
         if (!$user || !Hash::check(
-                $request->data['password'], $user->password)) {
+            $request->validated()['data']['password'], $user->password)) {
             return $this->failure(
                 message: 'The provided credentials are incorrect.',
                 status: HttpStatusCode::FORBIDDEN->value
@@ -342,35 +322,104 @@ class AuthController extends  Controller
 
 
     public function resetPassword(
-        Request $request) : JsonResponse
+        PasswordUpdateRequest $request) : JsonResponse
     {
-        // Validate the request data
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
-            'token' => 'required'
-        ]);
-
         // Get the user with the specified email
-        $user = User::where('email', $request->email)->first();
+        $user = auth()->user();
 
-        // If the user doesn't exist or the reset token is invalid, return an error response
-        if (!$user || !Password::tokenExists($user, $request->token)) {
-            return response()->json([
-                'message' => 'The password reset token is invalid or has expired.'
-            ], 422);
+        // Check if the user exists
+        if (!$user) {
+            return $this->failure(
+                message: 'We can\'t find a user with that e-mail address.',
+                status: HttpStatusCode::NOT_FOUND->value
+            );
         }
-
         // Reset the user's password
-        $user->password = Hash::make($request->password);
+        $user->password = Hash::make($request->validated()['data']['attributes']['password']);
         $user->save();
 
-        // Send the user an email to confirm the password reset
-       // Mail::to($user)->send(new PasswordResetConfirmation($user));
+        return $this->success(
+            message: 'password changed successfully',
+            data: [
+                'type' => 'password'
+            ],
+            status: HttpStatusCode::SUCCESSFUL->value
+        );
+    }
 
-        return response()->json([
-            'message' => 'Your password has been reset successfully.'
-        ]);
+    //send email to reset password otp
+
+    public function forgotPassword(PasswordResetRequest $request) : JsonResponse
+    {
+
+
+        $user = User::where('email', $request->validated()
+        ['data']['attributes']['email'])->first();
+
+        if (!$user) {
+            return $this->failure(
+                message: 'We can\'t find a user with that e-mail address.',
+                status: HttpStatusCode::NOT_FOUND->value
+            );
+        }
+
+        VerificationService::generateAndSendOtpForgotPassword($user);
+
+        $expired_at = EmailVerification::where('email', $user->email)->
+            latest()->first()->expired_at ?? null;
+        return $this->success(
+            message: 'otp sent to email successfully, please check your email',
+            data:[
+                'type' => 'send_otp',
+                'id' => strval($user->id),
+                'attributes' => [
+                    'email' => $user->email,
+                    'otp_expires_at' => $expired_at,
+                ],
+            ],
+            status: HttpStatusCode::SUCCESSFUL->value
+        );
+    }
+
+    public function verifyForgetonPasswordOtp(
+        VerifyOtpRequest $request
+    ): JsonResponse {
+        $otp = $request->validated()['data']['attributes']['otp'];
+        /** @var EmailVerification */
+
+        $isValidOtp = EmailVerification::firstWhere('otp', $otp);
+
+        if (now()->greaterThan($isValidOtp->expired_at)) {
+            return $this->failure(
+                message: 'OTP expired',
+                status: HttpStatusCode::BAD_REQUEST->value
+            );
+        }
+
+        /** @var User */
+        $loggedUser = User::firstWhere('email', $isValidOtp->email);
+        return DB::transaction(function () use ($loggedUser, $isValidOtp) {
+            $loggedUser->update(['email_verified_at' => now()]);
+
+            $isValidOtp->delete();
+
+            // login user
+            Auth::loginUsingId($loggedUser->id);
+
+            $accessToken = $loggedUser->createToken('authToken')->accessToken;
+            return $this->success(
+                message: 'user retrieved',
+                data: [
+                    'type' => 'user',
+                    'id' => strval($loggedUser->id),
+                    'attributes' => [
+                        'access_token' => $accessToken,
+                        'email' => $loggedUser->email
+                    ],
+                ],
+                status: HttpStatusCode::SUCCESSFUL->value
+            );
+        });
     }
 
 }

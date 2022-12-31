@@ -25,7 +25,7 @@ class PasswordResetRequest extends FormRequest
     {
         return [
             //
-            "password" => ['required']
+            'data.attributes.email' => ['required', 'email', 'exists:users,email'],
         ];
     }
 }
